@@ -1,4 +1,4 @@
-package ru.nsu.fit.lispmachine.tokenizer;
+package ru.nsu.fit.lispmachine.tokenizer.rules;
 
 public class IgnoreCaseWordTokenRule extends WordTokenRule {
 	public IgnoreCaseWordTokenRule(String word) {

@@ -1,12 +1,23 @@
 
-package ru.nsu.fit.lispmachine.tokenizer;
+package ru.nsu.fit.lispmachine.tokenizer.token;
 
-import static ru.nsu.fit.lispmachine.tokenizer.TokenRegex.*;
+import ru.nsu.fit.lispmachine.tokenizer.rules.EofRule;
+import ru.nsu.fit.lispmachine.tokenizer.rules.ITokenRule;
+import ru.nsu.fit.lispmachine.tokenizer.rules.PrefixTokenRule;
+import ru.nsu.fit.lispmachine.tokenizer.rules.RegexTokenRule;
+import ru.nsu.fit.lispmachine.tokenizer.rules.SuffixTokenRule;
+import ru.nsu.fit.lispmachine.tokenizer.rules.WordTokenRule;
+
+import static ru.nsu.fit.lispmachine.tokenizer.token.TokenRegex.*;
 
 public enum TokenType {
 	EOF(EofRule.INSTANCE),
-	OPEN_BRACE(new WordTokenRule("(")),
-	CLOSE_BRACE(new WordTokenRule(")")),
+
+	OPEN_BRACE(new PrefixTokenRule("(")),
+	SHARP_PREFIX_TOKEN_RULE(new PrefixTokenRule("#")),
+	ABBRIVEATION_TOKEN_RULE(new PrefixTokenRule("`")),
+	CLOSE_BRACE(new SuffixTokenRule(")")),
+
 	DEFINE_KEYWORD(new WordTokenRule("define")),
 	BEGIN_KEYWORD(new WordTokenRule("begin")),
 	LET_SYNTAX_KEYWORD(new WordTokenRule("let-syntax")),
@@ -31,6 +42,10 @@ public enum TokenType {
 
 	TokenType(ITokenRule rule) {
 		this.rule = rule;
+	}
+
+	public ITokenRule getRule() {
+		return this.rule;
 	}
 
 	public static TokenType recognizeType(String input) {

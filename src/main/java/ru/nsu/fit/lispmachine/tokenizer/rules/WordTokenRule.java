@@ -1,4 +1,4 @@
-package ru.nsu.fit.lispmachine.tokenizer;
+package ru.nsu.fit.lispmachine.tokenizer.rules;
 
 import java.util.Objects;
 

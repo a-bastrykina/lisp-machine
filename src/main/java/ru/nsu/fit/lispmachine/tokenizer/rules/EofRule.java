@@ -1,4 +1,4 @@
-package ru.nsu.fit.lispmachine.tokenizer;
+package ru.nsu.fit.lispmachine.tokenizer.rules;
 
 public class EofRule implements ITokenRule {
 	public static EofRule INSTANCE = new EofRule();
