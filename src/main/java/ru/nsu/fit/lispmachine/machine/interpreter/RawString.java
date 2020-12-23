@@ -2,20 +2,17 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-import java.util.List;
-
-public class Number implements Expression {
+public class RawString implements Expression {
 
 
-    private Object value;
+    private String value;
 
-    public Number(Object value) {
-        // Double or Integer
+    public RawString(String value) {
         this.value = value;
     }
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        return this;
+        return context.lookupVariable(value);
     }
 }
