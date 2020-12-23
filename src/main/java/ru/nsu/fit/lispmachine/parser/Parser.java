@@ -6,7 +6,9 @@ import java.util.List;
 
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
+import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
+import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
@@ -46,7 +48,7 @@ public class Parser {
 				case EOF:
 					return null;
 				case OPEN_BRACE:
-					return parseApplication();
+					return parseAfterOpenBrace();
 				//				case VECTOR_START:
 				//					break;
 				//				case ABBREVIATION:
@@ -80,7 +82,6 @@ public class Parser {
 	}
 
 	private Expression parseApplication() {
-		proceedToken();
 		Expression operator = parseNext();
 		List<Expression> operands = new ArrayList<>();
 		Expression current;
@@ -92,6 +93,79 @@ public class Parser {
 			operands.add(current);
 		}
 		return new Application(operator, operands);
+	}
+
+	private Expression parseAfterOpenBrace() {
+		proceedToken();
+		if (currentToken.getType() == TokenType.IDENTIFIER) {
+			if (SchemeKeywords.LAMBDA_KEYWORD.equals(currentToken.getData())) {
+				proceedToken();
+				return parseLambda();
+			} else if (SchemeKeywords.DEFINE_KEYWORD.equals(currentToken.getData())) {
+				proceedToken();
+				return parseDefine();
+			}
+		}
+		return parseApplication();
+	}
+
+	private Expression parseDefine() {
+		if (currentToken.getType() != TokenType.OPEN_BRACE) {
+			throw new ParseException("Expecting open brace to parse define's arguments");
+		}
+		proceedToken();
+
+		if (currentToken.getType() != TokenType.IDENTIFIER) {
+			throw new ParseException("Expecting identifier in define expression");
+		}
+
+		SchemerString definitionName = (SchemerString) parseNext();
+		List<Expression> params = new ArrayList<>();
+		Expression currentExpr;
+
+		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			currentExpr = parseNext();
+			if (currentExpr == null) {
+				throw new ParseException("Expecting closing brace, but EOF reached");
+			}
+			params.add(currentExpr);
+		}
+
+		proceedToken();
+
+		currentExpr = parseNext();
+
+		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting closing brace to complete define");
+		}
+
+		return new Define(definitionName, params, currentExpr);
+	}
+
+	private Expression parseLambda() {
+		if (currentToken.getType() != TokenType.OPEN_BRACE) {
+			throw new ParseException("Expecting open brace to parse lambda's arguments");
+		}
+		proceedToken();
+
+		List<Expression> args = new ArrayList<>();
+		Expression currentExpr;
+		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			currentExpr = parseNext();
+			if (currentExpr == null) {
+				throw new ParseException("Expecting closing brace, but EOF reached");
+			}
+			args.add(currentExpr);
+		}
+		proceedToken();
+
+		currentExpr = parseNext();
+
+		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting closing brace at the end of lambda");
+		}
+
+		return new Lambda(args, currentExpr);
 	}
 
 	private Expression parseDecimalNumber() {

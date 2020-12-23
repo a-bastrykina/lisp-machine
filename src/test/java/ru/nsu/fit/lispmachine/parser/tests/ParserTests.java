@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
+import ru.nsu.fit.lispmachine.machine.interpreter.Define;
+import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
@@ -94,5 +96,40 @@ public class ParserTests {
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "+"),
 				new Token(TokenType.NUM10_VALUE, "5"), new Token(TokenType.EOF)).iterator());
 		parser.parse();
+	}
+
+	@Test
+	public void testParseLambda() {
+		// (lambda (r) (* r r))
+		var expected = List
+				.of(new Lambda(List.of(new SchemerString("r")),
+						new Application(new SchemerString("*"), List.of(new SchemerString("r"),
+								new SchemerString("r")))));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "lambda"),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "*"),
+				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.IDENTIFIER, "r"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseDefine() {
+		// (define (square r) (* r r))
+		var expected = List
+				.of(new Define(new SchemerString("square"), List.of(new SchemerString("r")),
+						new Application(new SchemerString("*"), List.of(new SchemerString("r"),
+								new SchemerString("r")))));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "square"),
+				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "*"),
+				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.IDENTIFIER, "r"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
 	}
 }
