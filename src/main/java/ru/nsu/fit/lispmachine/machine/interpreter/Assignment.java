@@ -6,10 +6,10 @@ import java.util.Objects;
 
 public class Assignment implements Expression {
 
-	private final SchemerString name;
+	private final SchemeIdentifier name;
 	private final Expression value;
 
-	public Assignment(SchemerString name, Expression value) {
+	public Assignment(SchemeIdentifier name, Expression value) {
 		this.name = Objects.requireNonNull(name);
 		this.value = Objects.requireNonNull(value);
 	}

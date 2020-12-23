@@ -19,8 +19,8 @@ import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
-import ru.nsu.fit.lispmachine.machine.interpreter.SchemeStringLiteral;
-import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
@@ -95,7 +95,7 @@ public class Parser {
 				case REAL_VALUE:
 					return parseRealNumber();
 				default:
-					return new SchemerString(currentToken.getData());
+					return new SchemeIdentifier(currentToken.getData());
 			}
 		} finally {
 			proceedToken();
@@ -135,7 +135,7 @@ public class Parser {
 			if (currentToken.getType() != TokenType.IDENTIFIER) {
 				throw new ParseException("Failed to parse define clause: expected ( or identifier.");
 			}
-			SchemerString definitionName = (SchemerString) parseNext();
+			SchemeIdentifier definitionName = (SchemeIdentifier) parseNext();
 			Expression definitionExpr = parseNext();
 
 			if (currentToken.getType() != TokenType.CLOSE_BRACE) {
@@ -149,7 +149,7 @@ public class Parser {
 				throw new ParseException("Expecting identifier in define expression");
 			}
 
-			SchemerString definitionName = (SchemerString) parseNext();
+			SchemeIdentifier definitionName = (SchemeIdentifier) parseNext();
 			List<Expression> params = new ArrayList<>();
 			Expression currentExpr;
 
@@ -243,7 +243,7 @@ public class Parser {
 			throw new ParseException("Expecting closing brace to complete assignment clause");
 		}
 
-		return new Assignment((SchemerString) name, value);
+		return new Assignment((SchemeIdentifier) name, value);
 	}
 
 	private Expression parseBegin() {
@@ -305,7 +305,7 @@ public class Parser {
 
 	private Expression parseString() {
 		String unwrapped = currentToken.getData().substring(1, currentToken.getData().length() - 1);
-		return new SchemeStringLiteral(unwrapped);
+		return new SchemeString(unwrapped);
 	}
 
 }

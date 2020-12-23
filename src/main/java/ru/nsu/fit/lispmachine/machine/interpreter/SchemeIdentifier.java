@@ -4,10 +4,10 @@ import java.util.Objects;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-public class SchemerString implements Expression {
+public class SchemeIdentifier implements Expression {
     private final String value;
 
-    public SchemerString(String value) {
+    public SchemeIdentifier(String value) {
         this.value = value;
     }
 
@@ -30,7 +30,7 @@ public class SchemerString implements Expression {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        SchemerString string = (SchemerString) o;
+        SchemeIdentifier string = (SchemeIdentifier) o;
         return Objects.equals(value, string.value);
     }
 

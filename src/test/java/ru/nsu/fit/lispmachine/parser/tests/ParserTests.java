@@ -16,8 +16,8 @@ import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
-import ru.nsu.fit.lispmachine.machine.interpreter.SchemeStringLiteral;
-import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
@@ -93,7 +93,7 @@ public class ParserTests {
 
 	@Test
 	public void testParseString() {
-		var expected = List.of(new SchemeStringLiteral("Hello, world!\n"));
+		var expected = List.of(new SchemeString("Hello, world!\n"));
 		var parser = new Parser(
 				List.of(new Token(TokenType.STRING_VALUE, "\"Hello, world!\n\""), new Token(TokenType.EOF)).iterator());
 		assertEquals(expected, parser.parse());
@@ -104,7 +104,7 @@ public class ParserTests {
 	public void testParseApplication() {
 		// (+ 5 6)
 		var expected = List
-				.of(new Application(new SchemerString("+"), List.of(new SchemeNumber(5), new SchemeNumber(6))));
+				.of(new Application(new SchemeIdentifier("+"), List.of(new SchemeNumber(5), new SchemeNumber(6))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "+"),
 				new Token(TokenType.NUM10_VALUE, "5"), new Token(TokenType.NUM10_VALUE, "6"),
 				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
@@ -115,8 +115,8 @@ public class ParserTests {
 	@Test
 	public void testParseNestedApplication() {
 		// (+ 5 (* 6 7))
-		var expected = List.of(new Application(new SchemerString("+"), List.of(new SchemeNumber(5),
-				new Application(new SchemerString("*"), List.of(new SchemeNumber(6), new SchemeNumber(7))))));
+		var expected = List.of(new Application(new SchemeIdentifier("+"), List.of(new SchemeNumber(5),
+				new Application(new SchemeIdentifier("*"), List.of(new SchemeNumber(6), new SchemeNumber(7))))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "+"),
 				new Token(TokenType.NUM10_VALUE, "5"), new Token(TokenType.OPEN_BRACE),
 				new Token(TokenType.IDENTIFIER, "*"), new Token(TokenType.NUM10_VALUE, "6"),
@@ -131,7 +131,7 @@ public class ParserTests {
 	public void testParseApplication_Fail() {
 		// (+ 5
 		var expected = List
-				.of(new Application(new SchemerString("+"), List.of(new SchemeNumber(5), new SchemeNumber(6))));
+				.of(new Application(new SchemeIdentifier("+"), List.of(new SchemeNumber(5), new SchemeNumber(6))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "+"),
 				new Token(TokenType.NUM10_VALUE, "5"), new Token(TokenType.EOF)).iterator());
 		parser.parse();
@@ -141,9 +141,9 @@ public class ParserTests {
 	public void testParseLambda() {
 		// (lambda (r) (* r r))
 		var expected = List
-				.of(new Lambda(List.of(new SchemerString("r")),
-						new Application(new SchemerString("*"), List.of(new SchemerString("r"),
-								new SchemerString("r")))));
+				.of(new Lambda(List.of(new SchemeIdentifier("r")),
+						new Application(new SchemeIdentifier("*"), List.of(new SchemeIdentifier("r"),
+								new SchemeIdentifier("r")))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "lambda"),
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "*"),
@@ -158,7 +158,7 @@ public class ParserTests {
 	public void testParseDefine() {
 		// (define my-name "Alena")
 		var expected = List
-				.of(new Define(new SchemerString("my-name"), new SchemeStringLiteral("Alena")));
+				.of(new Define(new SchemeIdentifier("my-name"), new SchemeString("Alena")));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
 				new Token(TokenType.IDENTIFIER, "my-name"),
 				new Token(TokenType.STRING_VALUE, "\"Alena\""),
@@ -171,9 +171,9 @@ public class ParserTests {
 	public void testParseDefineWithParams() {
 		// (define (square r) (* r r))
 		var expected = List
-				.of(new Define(new SchemerString("square"), List.of(new SchemerString("r")),
-						new Application(new SchemerString("*"), List.of(new SchemerString("r"),
-								new SchemerString("r")))));
+				.of(new Define(new SchemeIdentifier("square"), List.of(new SchemeIdentifier("r")),
+						new Application(new SchemeIdentifier("*"), List.of(new SchemeIdentifier("r"),
+								new SchemeIdentifier("r")))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "square"),
 				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
@@ -202,7 +202,7 @@ public class ParserTests {
 	public void testParseQuote() {
 		// 'a
 		var expected = List
-				.of(new QuotedExpr(new SchemerString("a")));
+				.of(new QuotedExpr(new SchemeIdentifier("a")));
 		var parser = new Parser(
 				List.of(new Token(TokenType.QUOTE), new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.EOF))
 						.iterator());
@@ -214,7 +214,7 @@ public class ParserTests {
 	public void testParseQuoteApplication() {
 		// (quote a)
 		var expected = List
-				.of(new QuotedExpr(new SchemerString("a")));
+				.of(new QuotedExpr(new SchemeIdentifier("a")));
 		var parser = new Parser(
 				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "quote"),
 						new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.CLOSE_BRACE),
@@ -228,7 +228,7 @@ public class ParserTests {
 	public void testParseAssignment() {
 		// (set! my-var 42)
 		var expected = List
-				.of(new Assignment(new SchemerString("my-var"), new SchemeNumber(42)));
+				.of(new Assignment(new SchemeIdentifier("my-var"), new SchemeNumber(42)));
 		var parser = new Parser(
 				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "set!"),
 						new Token(TokenType.IDENTIFIER, "my-var"), new Token(TokenType.NUM10_VALUE, "42"),

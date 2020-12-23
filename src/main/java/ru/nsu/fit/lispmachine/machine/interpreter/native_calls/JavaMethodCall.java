@@ -4,7 +4,6 @@ import java.util.List;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
-import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 
 public class JavaMethodCall extends NativeCall {
 

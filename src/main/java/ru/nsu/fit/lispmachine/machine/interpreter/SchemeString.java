@@ -4,10 +4,10 @@ import java.util.Objects;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-public class SchemeStringLiteral implements Expression {
+public class SchemeString implements Expression {
 	private String value;
 
-	public SchemeStringLiteral(String value) {
+	public SchemeString(String value) {
 		this.value = value;
 	}
 
@@ -20,7 +20,7 @@ public class SchemeStringLiteral implements Expression {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		SchemeStringLiteral that = (SchemeStringLiteral) o;
+		SchemeString that = (SchemeString) o;
 		return Objects.equals(value, that.value);
 	}
 

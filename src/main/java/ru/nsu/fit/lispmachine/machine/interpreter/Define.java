@@ -5,23 +5,22 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Define implements Expression {
-	private final SchemerString name;
+	private final SchemeIdentifier name;
 	private final List<Expression> parameters;
 	private final Expression body;
 
-	public Define(SchemerString name, List<Expression> parameters, Expression body) {
+	public Define(SchemeIdentifier name, List<Expression> parameters, Expression body) {
 		this.name = name;
 		this.parameters = parameters;
 		this.body = body;
-		if (parameters.stream().anyMatch(e -> !(e instanceof SchemerString))) {
+		if (parameters.stream().anyMatch(e -> !(e instanceof SchemeIdentifier))) {
 			throw new IllegalArgumentException("Define arguments must be strings!");
 		}
 	}
 
-	public Define(SchemerString name, Expression body) {
+	public Define(SchemeIdentifier name, Expression body) {
 		this(name, Collections.emptyList(), body);
 	}
 
