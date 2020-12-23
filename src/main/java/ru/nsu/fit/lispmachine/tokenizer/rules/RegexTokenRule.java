@@ -14,4 +14,5 @@ public class RegexTokenRule implements ITokenRule {
 	@Override public boolean matches(String input) {
 		return regex.matcher(input).matches();
 	}
+
 }

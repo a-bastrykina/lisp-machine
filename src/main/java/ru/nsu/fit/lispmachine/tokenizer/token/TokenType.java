@@ -1,11 +1,14 @@
 
 package ru.nsu.fit.lispmachine.tokenizer.token;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import ru.nsu.fit.lispmachine.tokenizer.rules.CharTokenRule;
 import ru.nsu.fit.lispmachine.tokenizer.rules.EofRule;
 import ru.nsu.fit.lispmachine.tokenizer.rules.ITokenRule;
-import ru.nsu.fit.lispmachine.tokenizer.rules.PrefixTokenRule;
 import ru.nsu.fit.lispmachine.tokenizer.rules.RegexTokenRule;
-import ru.nsu.fit.lispmachine.tokenizer.rules.SuffixTokenRule;
 import ru.nsu.fit.lispmachine.tokenizer.rules.WordTokenRule;
 
 import static ru.nsu.fit.lispmachine.tokenizer.token.TokenRegex.*;
@@ -13,21 +16,10 @@ import static ru.nsu.fit.lispmachine.tokenizer.token.TokenRegex.*;
 public enum TokenType {
 	EOF(EofRule.INSTANCE),
 
-	OPEN_BRACE(new PrefixTokenRule("(")),
-	SHARP_PREFIX_TOKEN_RULE(new PrefixTokenRule("#")),
-	ABBRIVEATION_TOKEN_RULE(new PrefixTokenRule("`")),
-	CLOSE_BRACE(new SuffixTokenRule(")")),
-
-	DEFINE_KEYWORD(new WordTokenRule("define")),
-	BEGIN_KEYWORD(new WordTokenRule("begin")),
-	LET_SYNTAX_KEYWORD(new WordTokenRule("let-syntax")),
-	LETREC_SYNTAX_KEYWORD(new WordTokenRule("letrec-syntax")),
-	DEFINE_SYNTAX_KEYWORD(new WordTokenRule("define-syntax")),
-	QUOTE_KEYWORD(new WordTokenRule("quote")),
-	QUOTE_SYMBOL(new WordTokenRule("'")),
-	LAMBDA_KEYWORD(new WordTokenRule("lambda")),
-	IF_KEYWORD(new WordTokenRule("if")),
-	SET_KEYWORD(new WordTokenRule("set!")),
+	OPEN_BRACE(new CharTokenRule('(')),
+	VECTOR_START(new WordTokenRule("#(")),
+	ABBREVIATION(new CharTokenRule('\'', '`', ',')),
+	CLOSE_BRACE(new CharTokenRule(')')),
 
 	IDENTIFIER(new RegexTokenRule(IDENTIFIER_REGEX)),
 	BOOLEAN_VALUE(new RegexTokenRule(BOOLEAN_VALUE_REGEX)),
@@ -36,9 +28,12 @@ public enum TokenType {
 	NUM2_VALUE(new RegexTokenRule(NUM2_VALUE_REGEX)),
 	NUM8_VALUE(new RegexTokenRule(NUM8_VALUE_REGEX)),
 	NUM10_VALUE(new RegexTokenRule(NUM10_VALUE_REGEX)),
-	NUM16_VALUE(new RegexTokenRule(NUM16_VALUE_REGEX));
+	NUM16_VALUE(new RegexTokenRule(NUM16_VALUE_REGEX)),
+	REAL_VALUE(new RegexTokenRule(REAL_VALUE_REGEX));
 
 	private final ITokenRule rule;
+
+	private static List<TokenType> charBasedRuleTypes;
 
 	TokenType(ITokenRule rule) {
 		this.rule = rule;
@@ -48,6 +43,14 @@ public enum TokenType {
 		return this.rule;
 	}
 
+	private static List<TokenType> getCharacterBasedRuleTypes() {
+		if (charBasedRuleTypes == null) {
+			charBasedRuleTypes = Arrays.stream(values()).filter((t) -> t.getRule() instanceof CharTokenRule)
+					.collect(Collectors.toList());
+		}
+		return charBasedRuleTypes;
+	}
+
 	public static TokenType recognizeType(String input) {
 		for (var type : TokenType.values()) {
 			if (type.rule.matches(input)) {
@@ -55,6 +58,15 @@ public enum TokenType {
 			}
 		}
 		throw new IllegalArgumentException(String.format("Token type for input '%s' is not recognized", input));
+	}
+
+	public static TokenType matchCharacter(int ch) {
+		String input = Character.toString(ch);
+		for (var type : TokenType.getCharacterBasedRuleTypes()) {
+			if (type.getRule().matches(input))
+				return type;
+		}
+		return null;
 	}
 
 }
