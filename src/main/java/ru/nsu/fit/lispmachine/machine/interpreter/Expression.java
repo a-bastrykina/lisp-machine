@@ -3,7 +3,6 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface Expression {
     Expression evaluate(ExecutionContext context);
@@ -14,5 +13,10 @@ public interface Expression {
 
     default Expression apply(List<Expression> args, ExecutionContext context) {
         throw new IllegalArgumentException(this + "Not callable");
+    }
+
+    //todo maybe isTrueRedundant
+    default Object castTo(String clazzName) {
+        throw new IllegalArgumentException("Cannot cast this to " + clazzName);
     }
 }

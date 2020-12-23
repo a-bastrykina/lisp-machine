@@ -2,7 +2,6 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-import java.util.List;
 import java.util.Objects;
 
 public class SchemeNumber implements Expression {
@@ -33,6 +32,20 @@ public class SchemeNumber implements Expression {
             return false;
         SchemeNumber number = (SchemeNumber) o;
         return Objects.equals(value, number.value);
+    }
+
+    @Override
+    public  Object castTo(String className) {
+        //todo more cases
+        if (className.equals("java.lang.Double") || className.equals("double")) {
+            return value.doubleValue();
+        }
+        else {
+            if (className.equals("java.lang.Int") || className.equals("int")) {
+                return value.intValue();
+            }
+        }
+        return null;
     }
 
     @Override public int hashCode() {

@@ -2,12 +2,24 @@ package ru.nsu.fit.lispmachine.machine;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.SchemeContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.*;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.Tokenizer;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         var a = new SchemeContext();
+        var static_obj = "java.lang.Double";
+        var methodname = "sum";
+        List<Expression> ars = List.of( new SchemeNumber(123), new SchemeNumber(14));
+        var javaCall = new JavaMethodCall(new SchemeIdentifier(static_obj), new SchemeIdentifier(methodname), ars);
+        System.out.println(javaCall.evaluate(a));
 ////        (+ 123 (* 5 (- 10 5) ))
 //        var base = " " +
 //                "((lambda (x) (+ 5 (* x x))) (+ 123 (* 5 (- 10 5) )) ) " +
@@ -45,13 +57,13 @@ public class main {
                 +" r2"
                 ;
 //
-        var parser = new Parser(Tokenizer.tokenize(base));
-        var exprs = parser.parse();
-        System.out.println("exprs = " + exprs);
+//        var parser = new Parser(Tokenizer.tokenize(base));
+//        var exprs = parser.parse();
+//        System.out.println("exprs = " + exprs);
 //
-        for (Expression expr : exprs) {
-            System.out.println("expr = " + expr.evaluate(a));
-        }
-        System.out.println("a = " + a);
+//        for (Expression expr : exprs) {
+//            System.out.println("expr = " + expr.evaluate(a));
+//        }
+//        System.out.println("a = " + a);
     }
 }
