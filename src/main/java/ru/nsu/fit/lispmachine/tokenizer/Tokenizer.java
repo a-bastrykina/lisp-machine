@@ -1,81 +1,129 @@
 package ru.nsu.fit.lispmachine.tokenizer;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.Spliterators;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import ru.nsu.fit.lispmachine.tokenizer.rules.IStickingTokenRule;
-import ru.nsu.fit.lispmachine.tokenizer.rules.PrefixTokenRule;
-import ru.nsu.fit.lispmachine.tokenizer.rules.SuffixTokenRule;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 public class Tokenizer {
 
-	public static Stream<Token> tokenize(File file) throws FileNotFoundException {
-		return createStream(new Scanner(file));
+	public static Stream<Token> tokenize(File file) {
+		try {
+			return createStream(new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static Stream<Token> tokenize(String inputString) {
-		return createStream(new Scanner(inputString));
+		try {
+			return createStream(
+					new BufferedReader(new InputStreamReader(new ByteArrayInputStream(inputString.getBytes()))));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	private static Stream<Token> createStream(Scanner sc) {
-		var splitr = Spliterators.spliteratorUnknownSize(new TokenIterator(sc), Spliterator.NONNULL);
-		return StreamSupport.stream(splitr, false).onClose(sc::close);
+	private static Stream<Token> createStream(BufferedReader r) throws IOException {
+		var splitr = Spliterators.spliteratorUnknownSize(new TokenIterator(r), Spliterator.NONNULL);
+		return StreamSupport.stream(splitr, false).onClose(
+				() -> {
+					try {
+						r.close();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
+				}
+		);
 	}
 
 	private static class TokenIterator implements Iterator<Token> {
-		final Scanner sc;
-		final Deque<Token> tokenQueue;
+		final BufferedReader r;
+		boolean eofReached = false;
+		int currentChar;
 
-		TokenIterator(Scanner sc) {
-			this.sc = sc;
-			tokenQueue = new ArrayDeque<>();
+		private final int EOF = -1;
+
+		TokenIterator(BufferedReader r) throws IOException {
+			this.r = r;
+			currentChar = r.read();
 		}
 
 		@Override public boolean hasNext() {
-			return !tokenQueue.isEmpty() || sc.hasNext();
+			return !eofReached;
 		}
 
 		@Override public Token next() {
-			if (!tokenQueue.isEmpty()) {
-				return tokenQueue.removeFirst();
-			}
-			if (sc.hasNext()) {
-				var data = sc.next();
-				TokenType tokenType;
-
-				while ((tokenType = TokenType.recognizeType(data)).getRule() instanceof PrefixTokenRule) {
-					tokenQueue.addLast(new Token(tokenType));
-					data = ((IStickingTokenRule) tokenType.getRule()).cutOff(data);
+			try {
+				if (currentChar == EOF) {
+					eofReached = true;
+					return new Token(TokenType.EOF);
 				}
 
-				List<Token> suffixTokens = new ArrayList<>();
-				if (tokenType.getRule() instanceof SuffixTokenRule) {
-					do {
-						suffixTokens.add(new Token(tokenType));
-						data = ((IStickingTokenRule) tokenType.getRule()).cutOff(data);
-					} while ((tokenType = TokenType.recognizeType(data)).getRule() instanceof SuffixTokenRule);
+				// Skip whitespaces
+				while (Character.isWhitespace(currentChar)) {
+					currentChar = r.read();
 				}
 
-				// Now there must remain only one rule.
-				tokenQueue.add(new Token(tokenType, data));
-				tokenQueue.addAll(suffixTokens);
+				if (currentChar == EOF) {
+					eofReached = true;
+					return new Token(TokenType.EOF);
+				}
 
-				return tokenQueue.removeFirst();
-			} else {
-				throw new IllegalStateException("No tokens are available");
+				StringBuilder dataBuilder = new StringBuilder();
+
+				// Try match single character
+				TokenType type = TokenType.matchCharacter(currentChar);
+				if (type != null) {
+					currentChar = r.read();
+					return new Token(type);
+				}
+
+				if (currentChar == '\"') {
+					currentChar = r.read();
+					dataBuilder.append("\"");
+					readString(dataBuilder, (ch) -> ch != '\"', true);
+				} else {
+					if (currentChar == '#') {
+						dataBuilder.append('#');
+						currentChar = r.read();
+						if (currentChar == '(') {
+							currentChar = r.read();
+							return new Token(TokenType.VECTOR_START);
+						}
+					}
+					readString(dataBuilder, (ch) -> !Character.isWhitespace(ch) && ch != ')', false);
+				}
+
+				String data = dataBuilder.toString();
+				return new Token(TokenType.recognizeType(data), data);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
 		}
+
+		private void readString(StringBuilder sb, Predicate<Integer> continueCriteria, boolean appendLast)
+				throws IOException {
+			while (continueCriteria.test(currentChar) && currentChar != EOF) {
+				sb.append(Character.toString(currentChar));
+				currentChar = r.read();
+			}
+			if (appendLast && currentChar != EOF) {
+				sb.append(Character.toString(currentChar));
+				currentChar = r.read();
+			}
+		}
+
 	}
 }

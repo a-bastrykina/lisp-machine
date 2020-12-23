@@ -14,4 +14,18 @@ public class Token {
 	public Token(TokenType type) {
 		this(type, null);
 	}
+
+	@Override public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Token token = (Token) o;
+		return type == token.type &&
+				Objects.equals(data, token.data);
+	}
+
+	@Override public int hashCode() {
+		return Objects.hash(type, data);
+	}
 }
