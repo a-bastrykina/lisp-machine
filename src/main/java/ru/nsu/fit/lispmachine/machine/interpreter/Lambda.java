@@ -9,6 +9,7 @@ public class Lambda implements Expression {
     private final Expression body;
 
     Lambda(List<Expression> parameters, Expression body) {
+//        (lambda (r) (* r r)) -> parameter=[String(r)], body=Application(Operator=Symbol(*), Args =[String(r), String(r)]
         this.parameters = parameters;
         this.body = body;
     }
@@ -18,8 +19,4 @@ public class Lambda implements Expression {
         return new Application(body, parameters, context);
     }
 
-    @Override
-    public List<Expression> getArguments() {
-        return null;
-    }
 }

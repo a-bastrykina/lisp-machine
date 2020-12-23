@@ -1,7 +1,7 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
-import ru.nsu.fit.lispmachine.machine.interpreter.Atom;
+import ru.nsu.fit.lispmachine.machine.interpreter.Number;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 
 import java.util.HashMap;
@@ -14,8 +14,8 @@ public class SchemeContext implements ExecutionContext {
     private final Map<String, Expression> bindings = new HashMap<>();
 
     SchemeContext() {
-        var zero = new Atom<>((double) 0);
-        var one = new Atom<>((double) 1);
+        var zero = new Number<>((double) 0);
+        var one = new Number<>((double) 1);
 
         BinaryOperator<Expression> tmpPlus = (a, b) -> calculus(Double::sum, a, b);
         Function<List<Expression>, Expression> plus = args -> args.stream().reduce(zero, tmpPlus);
@@ -80,7 +80,7 @@ public class SchemeContext implements ExecutionContext {
         var val1 = (T) a.getNumericValue();
         var val2 = (T) b.getNumericValue();
         var res = f.apply(val1, val2);
-        return new Atom<>(res);
+        return new Number<>(res);
     }
 
 }

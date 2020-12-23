@@ -12,23 +12,33 @@ public class Application implements Expression {
     private final Expression operator;
 
     public Application(Expression operator, List<Expression> arguments, ExecutionContext context) {
+
+        // допустим парсим (+ 5 5)
+        // это application, у которого operator=String(+), Arguments = [Number(5), Number(5)]
+
+//        допустим парсим ((lambda (r) (* r r)) 5)
+        // это application,  у которого оператор это lambda(args= [String(r)], body = Application...), args = Number(5)
         this.operator = operator;
         this.arguments = arguments;
-        this.context = context;
     }
 
     @Override
-    public Expression evaluate(ExecutionContext c) {
-        return apply(operator.evaluate(c), arguments, c);
+    public Expression evaluate(ExecutionContext context) {
+        return null;
     }
 
-    @Override
-    public List<Expression> getArguments() {
-        return new ArrayList<>();
-    }
-
-    private Expression apply(Expression body, List<Expression> args, ExecutionContext c) {
-        var evaluatedArgs = args.stream().map(e -> e.evaluate(c)).collect(Collectors.toList());
-        return body.evaluate(evaluatedArgs, context);
-    }
+//    @Override
+//    public Expression evaluate(ExecutionContext c) {
+//        return apply(operator.evaluate(c), arguments, c);
+//    }
+//
+//    @Override
+//    public List<Expression> getArguments() {
+//        return new ArrayList<>();
+//    }
+//
+//    private Expression apply(Expression body, List<Expression> args, ExecutionContext c) {
+//        var evaluatedArgs = args.stream().map(e -> e.evaluate(c)).collect(Collectors.toList());
+//        return body.evaluate(evaluatedArgs, context);
+//    }
 }
