@@ -1,14 +1,19 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Division;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Minus;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Multiply;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Plus;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.Equal;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.Less;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.More;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.Not;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.CarCall;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.CdrCall;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.ConsCall;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.SchemeListCall;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Equal;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Less;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.More;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Not;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +32,10 @@ public class SchemeContext implements ExecutionContext {
         bindings.put("<", new Less());
         bindings.put("=", new Equal());
         bindings.put("not", new Not());
+        bindings.put("list", new SchemeListCall());
+        bindings.put("cons", new ConsCall());
+        bindings.put("car", new CarCall());
+        bindings.put("cdr", new CdrCall());
     }
 
     @Override
@@ -47,7 +56,7 @@ public class SchemeContext implements ExecutionContext {
         var res = new SchemeContext();
         res.bindings.putAll(bindings);
         for (int i = 0; i < values.size(); i++) {
-            res.addDefinition(variables.get(0), values.get(0));
+            res.addDefinition(variables.get(i), values.get(i));
         }
         return res;
     }

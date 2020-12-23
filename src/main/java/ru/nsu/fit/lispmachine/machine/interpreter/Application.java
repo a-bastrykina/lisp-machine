@@ -3,6 +3,7 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class Application implements Expression {
     @Override
     public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
         var args = applyArguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
+        System.out.println("arguments = " + Arrays.toString(arguments.toArray()));
         var newContext = context.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
         return this.operator.evaluate(newContext);
     }

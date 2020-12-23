@@ -1,4 +1,4 @@
-package ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus;
+package ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
@@ -9,20 +9,14 @@ import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Equal extends NativeCall {
+public class Not extends NativeCall {
     @Override
     public Expression apply(List<Expression> arguments, ExecutionContext context) {
         var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
 
-        if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
-            throw new IllegalArgumentException("= called with non numbers arguments");
+        if (args.size() != 1) {
+            throw  new IllegalArgumentException("not required only 1 argument");
         }
-        var first = ((SchemeNumber)args.get(0)).getValue();
-        var res = true;
-        for (Expression arg : args) {
-            var var = ((SchemeNumber)arg).getValue();
-            res = res && var.equals(first);
-        }
-        return new SchemeBool(res);
+        return new SchemeBool(!args.get(0).isTrue());
     }
 }
