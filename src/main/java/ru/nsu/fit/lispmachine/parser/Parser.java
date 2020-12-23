@@ -1,13 +1,16 @@
 package ru.nsu.fit.lispmachine.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
 
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
+import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
@@ -17,12 +20,22 @@ import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 public class Parser {
 
+	private HashMap<String, Supplier<Expression>> definedForms = new HashMap<>();
+
+
 	private final Iterator<Token> tokens;
 	Token currentToken;
 
 	public Parser(Iterator<Token> tokens) {
 		this.tokens = tokens;
 		currentToken = tokens.next();
+		initDefinedForms();
+	}
+
+	private void initDefinedForms() {
+		definedForms.put(SchemeKeywords.LAMBDA_KEYWORD, this::parseLambda);
+		definedForms.put(SchemeKeywords.DEFINE_KEYWORD, this::parseDefine);
+		definedForms.put(SchemeKeywords.IF_KEYWORD, this::parseIf);
 	}
 
 	public List<Expression> parse() {
@@ -98,18 +111,17 @@ public class Parser {
 	private Expression parseAfterOpenBrace() {
 		proceedToken();
 		if (currentToken.getType() == TokenType.IDENTIFIER) {
-			if (SchemeKeywords.LAMBDA_KEYWORD.equals(currentToken.getData())) {
-				proceedToken();
-				return parseLambda();
-			} else if (SchemeKeywords.DEFINE_KEYWORD.equals(currentToken.getData())) {
-				proceedToken();
-				return parseDefine();
+			Supplier<Expression> supplier = definedForms.get(currentToken.getData());
+			if (supplier != null) {
+				return supplier.get();
 			}
 		}
 		return parseApplication();
 	}
 
 	private Expression parseDefine() {
+		proceedToken();
+
 		if (currentToken.getType() != TokenType.OPEN_BRACE) {
 			throw new ParseException("Expecting open brace to parse define's arguments");
 		}
@@ -143,6 +155,8 @@ public class Parser {
 	}
 
 	private Expression parseLambda() {
+		proceedToken();
+
 		if (currentToken.getType() != TokenType.OPEN_BRACE) {
 			throw new ParseException("Expecting open brace to parse lambda's arguments");
 		}
@@ -166,6 +180,20 @@ public class Parser {
 		}
 
 		return new Lambda(args, currentExpr);
+	}
+
+	private Expression parseIf() {
+		proceedToken();
+
+		Expression condExpr = parseNext();
+		Expression thenExpr = parseNext();
+		Expression elseExpr = parseNext();
+
+		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting closing brace to complete if-clause");
+		}
+
+		return new IfClause(condExpr, thenExpr, elseExpr);
 	}
 
 	private Expression parseDecimalNumber() {

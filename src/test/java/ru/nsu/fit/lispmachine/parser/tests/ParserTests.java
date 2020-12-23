@@ -8,6 +8,7 @@ import org.junit.Test;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
+import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
@@ -129,6 +130,19 @@ public class ParserTests {
 				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.IDENTIFIER, "r"),
 				new Token(TokenType.CLOSE_BRACE),
 				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseIf() {
+		// (if #t 1 2)
+		var expected = List
+				.of(new IfClause(new SchemeBool(true), new SchemeNumber(1), new SchemeNumber(2)));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "if"),
+				new Token(TokenType.BOOLEAN_VALUE, "#t"), new Token(TokenType.NUM10_VALUE, "1"),
+				new Token(TokenType.NUM10_VALUE, "2"), new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF))
+				.iterator());
 		var actual = parser.parse();
 		assertEquals(expected, actual);
 	}
