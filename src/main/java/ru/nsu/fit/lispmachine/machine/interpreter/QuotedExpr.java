@@ -9,7 +9,7 @@ public class QuotedExpr implements Expression {
 	private final Expression body;
 
 	public QuotedExpr(Expression body) {
-		this.body = body;
+		this.body = Objects.requireNonNull(body);
 	}
 
 	@Override
