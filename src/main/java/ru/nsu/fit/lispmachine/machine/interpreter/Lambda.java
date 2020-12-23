@@ -18,10 +18,12 @@ public class Lambda implements Expression {
 		this.body = Objects.requireNonNull(body);
 	}
 
-	@Override
-	public Expression evaluate(ExecutionContext context) {
-		return new Application(body, parameters);
-	}
+    @Override
+    public Expression evaluate(ExecutionContext context) {
+        if (parameters.isEmpty())
+            return body;
+        return new Application(body, parameters);
+    }
 
 	@Override public boolean equals(Object o) {
 		if (this == o)

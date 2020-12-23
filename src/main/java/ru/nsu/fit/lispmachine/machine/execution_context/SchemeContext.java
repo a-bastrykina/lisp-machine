@@ -74,4 +74,8 @@ public class SchemeContext implements ExecutionContext {
         bindings.put(name, value);
     }
 
+    @Override
+    public String toString() {
+        return bindings.toString();
+    }
 }

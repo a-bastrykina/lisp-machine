@@ -16,9 +16,10 @@ public class Assignment implements Expression {
 
 	@Override
 	public Expression evaluate(ExecutionContext context) {
-		var evaluated = this.value.evaluate(context);
-		context.addDefinition(name.getValue(), evaluated); //todo lazy evaluation
-		return evaluated;
+	    var ex = context.lookupVariable(name.toString());
+	    var evaluated = this.value.evaluate(context);
+	    context.addDefinition(name.getValue(), evaluated);
+	    return evaluated;
 	}
 
 	@Override public boolean equals(Object o) {
