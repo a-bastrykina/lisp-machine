@@ -4,6 +4,7 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Lambda implements Expression {
     private final List<Expression> parameters;

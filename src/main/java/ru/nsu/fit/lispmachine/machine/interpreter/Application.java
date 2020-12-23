@@ -28,13 +28,12 @@ public class Application implements Expression {
     @Override
     public Expression evaluate(ExecutionContext context) {
         var op = operator.evaluate(context);
-        var args = arguments.stream().map(a-> a.evaluate(context)).collect(Collectors.toList());
-        return op.apply(args, context);
+        return op.apply(arguments, context);
     }
 
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
-        //todo fix me!
+
         var newContext = context.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
         return this.operator.evaluate(newContext);
     }
