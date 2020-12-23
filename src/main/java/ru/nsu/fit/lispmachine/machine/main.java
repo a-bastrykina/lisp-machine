@@ -36,10 +36,13 @@ public class main {
 //        lis.py> (define count (lambda (item L) (if L (+ (equal? item (first L)) (count item (rest L))) 0)))
 
         var base = " " +
-                "(define (equal?) = )" +
-                "(define (toint r) (if r 1 0 ))" +
-                "(define (count item l) (if l (+ (toint (= item (car l))) (count item (cdr l))) 0))"
-                +"(count 0 (list 0 1 2 3 0 0))"
+//                "(define (equal?) = )" +
+//                "(define (toint r) (if r 1 0 ))" +
+//                "(define (count item l) (if l (+ (toint (= item (car l))) (count item (cdr l))) 0))"
+//                +"(count 0 (list 0 1 2 3 0 0))"
+                "(define r2 10)"
+//                + "(set! r2 (lambda (r) (* r r)))"
+                +" r2"
                 ;
 //
         var parser = new Parser(Tokenizer.tokenize(base));
@@ -49,5 +52,6 @@ public class main {
         for (Expression expr : exprs) {
             System.out.println("expr = " + expr.evaluate(a));
         }
+        System.out.println("a = " + a);
     }
 }

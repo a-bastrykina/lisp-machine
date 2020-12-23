@@ -25,7 +25,6 @@ public class QuotedExpr implements Expression {
 		QuotedExpr that = (QuotedExpr) o;
 		return Objects.equals(body, that.body);
 	}
-
 	@Override public int hashCode() {
 		return Objects.hash(body);
 	}
