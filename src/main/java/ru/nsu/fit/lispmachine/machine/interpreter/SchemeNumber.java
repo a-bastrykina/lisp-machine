@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class SchemeNumber implements Expression {
-
-
     private Number value;
 
     public SchemeNumber(Number value) {
@@ -33,7 +31,7 @@ public class SchemeNumber implements Expression {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Number number = (Number) o;
+        SchemeNumber number = (SchemeNumber) o;
         return Objects.equals(value, number.value);
     }
 

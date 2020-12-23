@@ -5,8 +5,6 @@ import java.util.Objects;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 public class SchemerString implements Expression {
-
-
     private final String value;
 
     public SchemerString(String value) {
@@ -28,7 +26,7 @@ public class SchemerString implements Expression {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        String string = (String) o;
+        SchemerString string = (SchemerString) o;
         return Objects.equals(value, string.value);
     }
 

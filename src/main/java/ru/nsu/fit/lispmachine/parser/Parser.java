@@ -5,11 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
-import ru.nsu.fit.lispmachine.machine.execution_context.NullContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
-import ru.nsu.fit.lispmachine.machine.interpreter.Number;
-import ru.nsu.fit.lispmachine.machine.interpreter.String;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
@@ -72,7 +71,7 @@ public class Parser {
 				case REAL_VALUE:
 					return parseRealNumber();
 				default:
-					return new String(currentToken.getData());
+					return new SchemerString(currentToken.getData());
 			}
 		} finally {
 			proceedToken();
@@ -91,26 +90,26 @@ public class Parser {
 			}
 			operands.add(current);
 		}
-		return new Application(operator, operands, NullContext.INSTANCE);
+		return new Application(operator, operands);
 	}
 
 	private Expression parseDecimalNumber() {
-		return new Number(Integer.parseInt(currentToken.getData()));
+		return new SchemeNumber(Integer.parseInt(currentToken.getData()));
 	}
 
 	private Expression parseBinaryNumber() {
-		return new Number(Integer.parseInt(currentToken.getData().substring(2), 2));
+		return new SchemeNumber(Integer.parseInt(currentToken.getData().substring(2), 2));
 	}
 
 	private Expression parseOctetNumber() {
-		return new Number(Integer.parseInt(currentToken.getData().substring(2), 8));
+		return new SchemeNumber(Integer.parseInt(currentToken.getData().substring(2), 8));
 	}
 
 	private Expression parseHexNumber() {
-		return new Number(Integer.parseInt(currentToken.getData().substring(2), 16));
+		return new SchemeNumber(Integer.parseInt(currentToken.getData().substring(2), 16));
 	}
 
 	private Expression parseRealNumber() {
-		return new Number(Double.parseDouble(currentToken.getData()));
+		return new SchemeNumber(Double.parseDouble(currentToken.getData()));
 	}
 }
