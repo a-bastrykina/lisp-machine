@@ -1,10 +1,14 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Division;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Minus;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Multiply;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Plus;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Division;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Minus;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Multiply;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Plus;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.Equal;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.Less;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.More;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.calculus.Not;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +22,11 @@ public class SchemeContext implements ExecutionContext {
         bindings.put("-", new Minus());
         bindings.put("*", new Multiply());
         bindings.put("/", new Division());
+
+        bindings.put(">", new More());
+        bindings.put("<", new Less());
+        bindings.put("=", new Equal());
+        bindings.put("not", new Not());
     }
 
     @Override

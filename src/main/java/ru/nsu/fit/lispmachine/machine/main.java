@@ -28,7 +28,12 @@ public class main {
         );
 
         d = new Application( new RawString("+"), ars1);
-        res = d.evaluate(a);
-        System.out.println("res = " + res);
+        var res1 = d.evaluate(a);
+        System.out.println("res1 = " + res1);
+
+        d = new Application(new RawString("not"),
+                List.of(new Application(new RawString("="), List.of(res, res1)))
+        );
+        System.out.println("d = " + d.evaluate(a));
     }
 }

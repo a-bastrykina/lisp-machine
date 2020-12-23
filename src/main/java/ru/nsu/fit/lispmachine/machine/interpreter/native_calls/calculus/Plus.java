@@ -1,12 +1,13 @@
-package ru.nsu.fit.lispmachine.machine.interpreter.native_calls;
+package ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
 
 import java.util.List;
 
-public class Division extends NativeCall {
+public class Plus extends NativeCall {
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
         if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
@@ -16,13 +17,13 @@ public class Division extends NativeCall {
             var res = args.stream().
                     map(a-> ((SchemeNumber) a).getValue()).
                     map(Number::doubleValue).
-                    reduce(1., (a,b)-> a / b);
+                    reduce(0., Double::sum);
             return new SchemeNumber(res);
         } else {
             var res = args.stream().
                     map(a-> ((SchemeNumber) a).getValue()).
                     map(Number::intValue).
-                    reduce(1,  (a,b)-> a / b);
+                    reduce(0, Integer::sum);
             return new SchemeNumber(res);
         }
     }
