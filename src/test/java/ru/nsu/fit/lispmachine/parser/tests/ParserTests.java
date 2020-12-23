@@ -15,6 +15,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeStringLiteral;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
@@ -88,6 +89,15 @@ public class ParserTests {
 		var parser = new Parser(List.of(new Token(TokenType.BOOLEAN_VALUE, "#t"), new Token(TokenType.EOF)).iterator());
 		assertEquals(expected, parser.parse());
 	}
+
+	@Test
+	public void testParseString() {
+		var expected = List.of(new SchemeStringLiteral("Hello, world!\n"));
+		var parser = new Parser(
+				List.of(new Token(TokenType.STRING_VALUE, "\"Hello, world!\n\""), new Token(TokenType.EOF)).iterator());
+		assertEquals(expected, parser.parse());
+	}
+
 
 	@Test
 	public void testParseApplication() {

@@ -17,6 +17,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeStringLiteral;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
@@ -78,8 +79,8 @@ public class Parser {
 					return parseBoolean();
 				case CHARACTER_VALUE:
 					return parseChar();
-				//				case STRING_VALUE:
-				//					break;
+				case STRING_VALUE:
+					return parseString();
 				case NUM2_VALUE:
 					return parseBinaryNumber();
 				case NUM8_VALUE:
@@ -272,6 +273,11 @@ public class Parser {
 			default:
 				return new SchemeChar(rawValue.charAt(0));
 		}
+	}
+
+	private Expression parseString() {
+		String unwrapped = currentToken.getData().substring(1, currentToken.getData().length() - 1);
+		return new SchemeStringLiteral(unwrapped);
 	}
 
 }
