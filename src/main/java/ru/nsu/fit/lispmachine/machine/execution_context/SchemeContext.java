@@ -1,6 +1,9 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Division;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Minus;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Multiply;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.Plus;
 
 import java.util.HashMap;
@@ -12,6 +15,9 @@ public class SchemeContext implements ExecutionContext {
 
     public SchemeContext() {
         bindings.put("+", new Plus());
+        bindings.put("-", new Minus());
+        bindings.put("*", new Multiply());
+        bindings.put("/", new Division());
     }
 
     @Override
