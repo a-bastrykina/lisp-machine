@@ -5,11 +5,17 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Minus extends NativeCall {
     @Override
-    public Expression apply(List<Expression> args, ExecutionContext context) {
+    public Expression apply(List<Expression> arguments, ExecutionContext context) {
+        //todo fix minus
+        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
+        System.out.println("args = " + Arrays.toString(args.toArray()));
+
         if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("- called with non numbers arguments");
         }

@@ -32,8 +32,8 @@ public class Application implements Expression {
     }
 
     @Override
-    public Expression apply(List<Expression> args, ExecutionContext context) {
-
+    public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
+        var args = applyArguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
         var newContext = context.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
         return this.operator.evaluate(newContext);
     }
