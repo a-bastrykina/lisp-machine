@@ -7,6 +7,7 @@ import java.util.List;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
@@ -54,8 +55,8 @@ public class Parser {
 				//					break;
 				//				case IDENTIFIER:
 				//					break;
-				//				case BOOLEAN_VALUE:
-				//					break;
+				case BOOLEAN_VALUE:
+					return parseBoolean();
 				//				case CHARACTER_VALUE:
 				//					break;
 				//				case STRING_VALUE:
@@ -111,5 +112,16 @@ public class Parser {
 
 	private Expression parseRealNumber() {
 		return new SchemeNumber(Double.parseDouble(currentToken.getData()));
+	}
+
+	private Expression parseBoolean() {
+		switch (currentToken.getData().substring(1).toLowerCase()) {
+			case "f":
+				return new SchemeBool(false);
+			case "t":
+				return new SchemeBool(true);
+			default:
+				throw new ParseException("Failed to parse boolean for input" + currentToken.getData());
+		}
 	}
 }

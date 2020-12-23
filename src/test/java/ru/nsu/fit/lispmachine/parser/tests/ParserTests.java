@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.parser.Parser;
@@ -14,6 +15,7 @@ import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 public class ParserTests {
+
 	@Test
 	public void testParseDecimalNumber() {
 		var expected = List.of(new SchemeNumber(42));
@@ -48,6 +50,13 @@ public class ParserTests {
 		var actual = parser.parse();
 		assertTrue(actual.get(0) instanceof SchemeNumber);
 		assertEquals(1.23, ((SchemeNumber) actual.get(0)).getValue().doubleValue(), 0.001);
+	}
+
+	@Test
+	public void testParseBoolean() {
+		var expected = List.of(new SchemeBool(true));
+		var parser = new Parser(List.of(new Token(TokenType.BOOLEAN_VALUE, "#t"), new Token(TokenType.EOF)).iterator());
+		assertEquals(expected, parser.parse());
 	}
 
 	@Test
