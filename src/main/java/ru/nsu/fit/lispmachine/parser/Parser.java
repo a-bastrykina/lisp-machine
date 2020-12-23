@@ -128,35 +128,46 @@ public class Parser {
 		proceedToken();
 
 		if (currentToken.getType() != TokenType.OPEN_BRACE) {
-			throw new ParseException("Expecting open brace to parse define's arguments");
-		}
-		proceedToken();
-
-		if (currentToken.getType() != TokenType.IDENTIFIER) {
-			throw new ParseException("Expecting identifier in define expression");
-		}
-
-		SchemerString definitionName = (SchemerString) parseNext();
-		List<Expression> params = new ArrayList<>();
-		Expression currentExpr;
-
-		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-			currentExpr = parseNext();
-			if (currentExpr == null) {
-				throw new ParseException("Expecting closing brace, but EOF reached");
+			// Try parse define without parameters.
+			if (currentToken.getType() != TokenType.IDENTIFIER) {
+				throw new ParseException("Failed to parse define clause: expected ( or identifier.");
 			}
-			params.add(currentExpr);
+			SchemerString definitionName = (SchemerString) parseNext();
+			Expression definitionExpr = parseNext();
+
+			if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+				throw new ParseException("Expecting closing brace to complete define");
+			}
+			return new Define(definitionName, definitionExpr);
+		} else {
+			proceedToken();
+
+			if (currentToken.getType() != TokenType.IDENTIFIER) {
+				throw new ParseException("Expecting identifier in define expression");
+			}
+
+			SchemerString definitionName = (SchemerString) parseNext();
+			List<Expression> params = new ArrayList<>();
+			Expression currentExpr;
+
+			while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+				currentExpr = parseNext();
+				if (currentExpr == null) {
+					throw new ParseException("Expecting closing brace, but EOF reached");
+				}
+				params.add(currentExpr);
+			}
+
+			proceedToken();
+
+			currentExpr = parseNext();
+
+			if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+				throw new ParseException("Expecting closing brace to complete define");
+			}
+
+			return new Define(definitionName, params, currentExpr);
 		}
-
-		proceedToken();
-
-		currentExpr = parseNext();
-
-		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
-			throw new ParseException("Expecting closing brace to complete define");
-		}
-
-		return new Define(definitionName, params, currentExpr);
 	}
 
 	private Expression parseLambda() {

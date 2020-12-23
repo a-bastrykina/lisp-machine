@@ -2,6 +2,7 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -18,6 +19,10 @@ public class Define implements Expression {
 		if (parameters.stream().anyMatch(e -> !(e instanceof SchemerString))) {
 			throw new IllegalArgumentException("Define arguments must be strings!");
 		}
+	}
+
+	public Define(SchemerString name, Expression body) {
+		this(name, Collections.emptyList(), body);
 	}
 
 	@Override

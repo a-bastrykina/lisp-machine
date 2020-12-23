@@ -155,6 +155,19 @@ public class ParserTests {
 
 	@Test
 	public void testParseDefine() {
+		// (define my-name "Alena")
+		var expected = List
+				.of(new Define(new SchemerString("my-name"), new SchemeStringLiteral("Alena")));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
+				new Token(TokenType.IDENTIFIER, "my-name"),
+				new Token(TokenType.STRING_VALUE, "\"Alena\""),
+				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseDefineWithParams() {
 		// (define (square r) (* r r))
 		var expected = List
 				.of(new Define(new SchemerString("square"), List.of(new SchemerString("r")),
