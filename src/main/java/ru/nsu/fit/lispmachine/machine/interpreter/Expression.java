@@ -11,10 +11,4 @@ public interface Expression {
         return true;
     }
 
-    List<Expression> getArguments();
-
-    default Object getNumericValue() {
-        throw new IllegalArgumentException(this + "Is not numeric value");
-    }
-
 }

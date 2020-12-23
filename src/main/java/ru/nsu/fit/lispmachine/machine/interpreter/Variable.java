@@ -4,18 +4,17 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.List;
 
-public class Lambda implements Expression {
-    private final List<Expression> parameters;
-    private final Expression body;
+public class Variable implements Expression {
 
-    Lambda(List<Expression> parameters, Expression body) {
-        this.parameters = parameters;
-        this.body = body;
+    private String name;
+
+    Variable(String name) {
+        this.name = name;
     }
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        return new Application(body, parameters, context);
+        return context.lookupVariable(name);
     }
 
     @Override

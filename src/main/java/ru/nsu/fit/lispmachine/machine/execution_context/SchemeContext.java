@@ -1,21 +1,17 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
+import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Atom;
-import ru.nsu.fit.lispmachine.machine.interpreter.AtomTypes;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 public class SchemeContext implements ExecutionContext {
     private final Map<String, Expression> bindings = new HashMap<>();
-    private final Map<String, Function<List<Expression>, Expression>> predefinedFunctions = new HashMap<>();
 
     SchemeContext() {
         var zero = new Atom<>((double) 0);
@@ -23,33 +19,34 @@ public class SchemeContext implements ExecutionContext {
 
         BinaryOperator<Expression> tmpPlus = (a, b) -> calculus(Double::sum, a, b);
         Function<List<Expression>, Expression> plus = args -> args.stream().reduce(zero, tmpPlus);
+        bindings.put("+", new Application(plus, this));
 
         BinaryOperator<Double> tmpm = (a, b) -> a * b;
         BinaryOperator<Expression> tmpMult = (a, b) -> calculus(tmpm, a, b);
         Function<List<Expression>, Expression> mult = args -> args.stream().reduce(one, tmpMult);
+        bindings.put("*", new ru.nsu.fit.lispmachine.machine.interpreter.Function(mult, this));
+
 
         BinaryOperator<Double> tmpd = (a, b) -> a / b;
-        BinaryOperator<Expression> tmpDiv = (a, b) -> calculus(tmpm, a, b);
+        BinaryOperator<Expression> tmpDiv = (a, b) -> calculus(tmpd, a, b);
         Function<List<Expression>, Expression> div = args -> args.stream().reduce(one, tmpDiv);
+        bindings.put("/", new ru.nsu.fit.lispmachine.machine.interpreter.Function(div, this));
 
         BinaryOperator<Double> tmps = (a, b) -> a - b;
-        BinaryOperator<Expression> tmpSub = (a, b) -> calculus(tmpm, a, b);
+        BinaryOperator<Expression> tmpSub = (a, b) -> calculus(tmps, a, b);
         Function<List<Expression>, Expression> sub = args -> args.stream().reduce(zero, tmpSub);
-
-        predefinedFunctions.put("*", mult);
-        predefinedFunctions.put("-", sub);
-        predefinedFunctions.put("+", plus);
-        predefinedFunctions.put("/", div);
+        bindings.put("-", new ru.nsu.fit.lispmachine.machine.interpreter.Function(sub, this));
 
     }
 
     @Override
-    public Expression lookup(String name) {
+    public Expression lookupVariable(String name) {
         if (!bindings.containsKey(name)) {
             throw new IllegalArgumentException("Definition with name " + name + "not found");
         }
         return bindings.get(name);
     }
+
 
     @Override
     public ExecutionContext extendContext(List<String> variables, List<Expression> values) {

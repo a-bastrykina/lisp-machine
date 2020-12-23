@@ -5,7 +5,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import java.util.List;
 
 public interface ExecutionContext {
-    Expression lookup(String name);
+    Expression lookupVariable(String name);
 
     ExecutionContext extendContext(List<String> variables, List<Expression> values);
 
