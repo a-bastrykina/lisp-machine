@@ -53,7 +53,10 @@ public class Tokenizer {
 		boolean eofReached = false;
 		int currentChar;
 
-		private final int EOF = -1;
+		private static final int EOF = -1;
+		private static final int START_STRING_CHAR = '\"';
+		private static final int SHARP_CHAR = '#';
+		private static final int OPEN_BRACE_CHAR = '(';
 
 		TokenIterator(BufferedReader r) throws IOException {
 			this.r = r;
@@ -90,15 +93,15 @@ public class Tokenizer {
 					return new Token(type);
 				}
 
-				if (currentChar == '\"') {
+				if (currentChar == START_STRING_CHAR) {
 					currentChar = r.read();
-					dataBuilder.append("\"");
+					dataBuilder.append(Character.toString(START_STRING_CHAR));
 					readString(dataBuilder, (ch) -> ch != '\"', true);
 				} else {
-					if (currentChar == '#') {
-						dataBuilder.append('#');
+					if (currentChar == SHARP_CHAR) {
+						dataBuilder.append(Character.toString(SHARP_CHAR));
 						currentChar = r.read();
-						if (currentChar == '(') {
+						if (currentChar == OPEN_BRACE_CHAR) {
 							currentChar = r.read();
 							return new Token(TokenType.VECTOR_START);
 						}
