@@ -13,7 +13,6 @@ public class Plus extends NativeCall {
     @Override
     public Expression apply(List<Expression> arguments, ExecutionContext context) {
         var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
-        System.out.println("args = " + Arrays.toString(args.toArray()));
         if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("+ called with non numbers arguments");
         }

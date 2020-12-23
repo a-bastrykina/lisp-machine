@@ -21,7 +21,7 @@ public class More extends NativeCall {
         var res = true;
         for (Expression arg : args) {
             var var = ((SchemeNumber)arg).getValue();
-            res = res && var.doubleValue() > first.doubleValue();
+            res = res && first.doubleValue() > var.doubleValue();
         }
         return new SchemeBool(res);
     }
