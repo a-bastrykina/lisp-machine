@@ -7,10 +7,13 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Not extends NativeCall {
     @Override
-    public Expression apply(List<Expression> args, ExecutionContext context) {
+    public Expression apply(List<Expression> arguments, ExecutionContext context) {
+        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
+
         if (args.size() != 1) {
             throw  new IllegalArgumentException("not required only 1 argument");
         }

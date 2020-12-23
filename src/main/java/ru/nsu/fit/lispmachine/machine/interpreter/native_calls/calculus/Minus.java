@@ -12,25 +12,28 @@ import java.util.stream.Collectors;
 public class Minus extends NativeCall {
     @Override
     public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        //todo fix minus
-        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
-        System.out.println("args = " + Arrays.toString(args.toArray()));
+        var args = arguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
+        if (args.size() < 1) {
+            throw new IllegalArgumentException("- called without arguments");
+        }
+        if (args.size() == 1) {
+            return new SchemeNumber(-((SchemeNumber) args.get(0)).getValue().doubleValue());
+        }
 
-        if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
+        if (!args.stream().allMatch(a -> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("- called with non numbers arguments");
         }
-        if (args.stream().anyMatch(a-> ((SchemeNumber) a).getValue() instanceof Double)) {
-            var res = args.stream().
-                    map(a-> ((SchemeNumber) a).getValue()).
-                    map(Number::doubleValue).
-                    reduce(0., (a,b)-> a - b);
-            return new SchemeNumber(res);
-        } else {
-            var res = args.stream().
-                    map(a-> ((SchemeNumber) a).getValue()).
-                    map(Number::intValue).
-                    reduce(0,  (a,b)-> a - b);
-            return new SchemeNumber(res);
+
+        var headValue = ((SchemeNumber) args.get(0)).getValue().doubleValue();
+        for (Expression arg : args.stream().skip(1).collect(Collectors.toList())) {
+            var val = ((SchemeNumber) arg).getValue().doubleValue();
+            headValue -= val;
         }
+        if (args.stream().anyMatch(a -> ((SchemeNumber) a).getValue() instanceof Double)) {
+            return new SchemeNumber(headValue);
+        } else {
+            return new SchemeNumber((int) headValue);
+        }
+
     }
 }
