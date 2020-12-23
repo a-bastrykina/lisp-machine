@@ -8,7 +8,7 @@ public class Lambda implements Expression {
     private final List<Expression> parameters;
     private final Expression body;
 
-    Lambda(List<Expression> parameters, Expression body) {
+    public Lambda(List<Expression> parameters, Expression body) {
 //        (lambda (r) (* r r)) ->
 //        parameter=[String(r)],
 //        body=Application(Operator=Symbol(*), Args =[String(r), String(r)]

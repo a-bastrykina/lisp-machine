@@ -4,6 +4,7 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +35,7 @@ public class Application implements Expression {
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
         //todo fix me!
-        throw new IllegalArgumentException("Fix apply in Application.java!");
+        var newContext = context.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
+        return this.operator.evaluate(newContext);
     }
 }
