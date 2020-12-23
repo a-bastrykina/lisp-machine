@@ -8,15 +8,17 @@ public class Lambda implements Expression {
     private final List<Expression> parameters;
     private final Expression body;
 
-    Lambda(List<Expression> parameters, Expression body) {
-//        (lambda (r) (* r r)) -> parameter=[String(r)], body=Application(Operator=Symbol(*), Args =[String(r), String(r)]
+    public Lambda(List<Expression> parameters, Expression body) {
+//        (lambda (r) (* r r)) ->
+//        parameter=[String(r)],
+//        body=Application(Operator=Symbol(*), Args =[String(r), String(r)]
         this.parameters = parameters;
         this.body = body;
     }
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        return new Application(body, parameters, context);
+        return new Application(body, parameters);
     }
 
 }
