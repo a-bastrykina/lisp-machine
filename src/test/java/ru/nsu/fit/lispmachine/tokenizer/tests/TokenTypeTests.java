@@ -9,6 +9,7 @@ public class TokenTypeTests {
 	@Test
 	public void testRecognizeIdentifier() {
 		Assert.assertEquals(TokenType.IDENTIFIER, TokenType.recognizeType("num-ber?"));
+		Assert.assertEquals(TokenType.IDENTIFIER, TokenType.recognizeType("r2"));
 	}
 
 	@Test

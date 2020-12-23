@@ -15,6 +15,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
@@ -205,6 +206,20 @@ public class ParserTests {
 				.of(new QuotedExpr(new SchemeIdentifier("a")));
 		var parser = new Parser(
 				List.of(new Token(TokenType.QUOTE), new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.EOF))
+						.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseQuoteList() {
+		// '(1 2)
+		var expected = List
+				.of(new QuotedExpr(new SchemeList(List.of(new SchemeNumber(1), new SchemeNumber(2)))));
+		var parser = new Parser(
+				List.of(new Token(TokenType.QUOTE), new Token(TokenType.OPEN_BRACE),
+						new Token(TokenType.NUM10_VALUE, "1"), new Token(TokenType.NUM10_VALUE, "2"),
+						new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF))
 						.iterator());
 		var actual = parser.parse();
 		assertEquals(expected, actual);

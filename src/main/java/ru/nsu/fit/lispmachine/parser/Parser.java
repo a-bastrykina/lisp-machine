@@ -18,6 +18,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
@@ -220,13 +221,27 @@ public class Parser {
 
 		proceedToken();
 
-		Expression nestedExpr = parseNext();
-
-		if (expectCloseBrace && currentToken.getType() != TokenType.CLOSE_BRACE) {
-			throw new ParseException("Expecting closing brace to complete quote clause");
+		if (currentToken.getType() == TokenType.OPEN_BRACE) {
+			proceedToken();
+			List<Expression> args = new ArrayList<>();
+			Expression currentExpr;
+			while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+				currentExpr = parseNext();
+				if (currentExpr == null) {
+					throw new ParseException("Expecting closing brace, but EOF reached");
+				}
+				args.add(currentExpr);
+			}
+			return new QuotedExpr(new SchemeList(args));
+		} else {
+			Expression nestedExpr = parseNext();
+			if (expectCloseBrace && currentToken.getType() != TokenType.CLOSE_BRACE) {
+				throw new ParseException("Expecting closing brace to complete quote clause");
+			}
+			return new QuotedExpr(nestedExpr);
 		}
 
-		return new QuotedExpr(nestedExpr);
+
 	}
 
 	private Expression parseAssignment() {
