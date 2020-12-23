@@ -10,6 +10,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
+import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
@@ -143,6 +144,32 @@ public class ParserTests {
 				new Token(TokenType.BOOLEAN_VALUE, "#t"), new Token(TokenType.NUM10_VALUE, "1"),
 				new Token(TokenType.NUM10_VALUE, "2"), new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF))
 				.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseQuote() {
+		// 'a
+		var expected = List
+				.of(new QuotedExpr(new SchemerString("a")));
+		var parser = new Parser(
+				List.of(new Token(TokenType.QUOTE), new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.EOF))
+						.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseQuoteApplication() {
+		// (quote a)
+		var expected = List
+				.of(new QuotedExpr(new SchemerString("a")));
+		var parser = new Parser(
+				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "quote"),
+						new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.CLOSE_BRACE),
+						new Token(TokenType.EOF))
+						.iterator());
 		var actual = parser.parse();
 		assertEquals(expected, actual);
 	}

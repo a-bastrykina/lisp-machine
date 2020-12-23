@@ -70,7 +70,7 @@ public class TokenizerTests {
 
 	@Test
 	public void testTokenizeAbbreviation() {
-		test("(sum-list '(6 8 100))",
+		test("(sum-list `(6 8 100))",
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "sum-list"),
 				new Token(TokenType.ABBREVIATION), new Token(TokenType.OPEN_BRACE),
 				new Token(TokenType.NUM10_VALUE, "6"), new Token(TokenType.NUM10_VALUE, "8"),

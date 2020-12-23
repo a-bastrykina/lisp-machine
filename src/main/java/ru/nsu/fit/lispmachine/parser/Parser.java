@@ -12,6 +12,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
+import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
@@ -20,8 +21,7 @@ import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 public class Parser {
 
-	private HashMap<String, Supplier<Expression>> definedForms = new HashMap<>();
-
+	private final HashMap<String, Supplier<Expression>> definedForms = new HashMap<>();
 
 	private final Iterator<Token> tokens;
 	Token currentToken;
@@ -36,6 +36,7 @@ public class Parser {
 		definedForms.put(SchemeKeywords.LAMBDA_KEYWORD, this::parseLambda);
 		definedForms.put(SchemeKeywords.DEFINE_KEYWORD, this::parseDefine);
 		definedForms.put(SchemeKeywords.IF_KEYWORD, this::parseIf);
+		definedForms.put(SchemeKeywords.QUOTE_KEYWORD, this::parseQuote);
 	}
 
 	public List<Expression> parse() {
@@ -64,8 +65,8 @@ public class Parser {
 					return parseAfterOpenBrace();
 				//				case VECTOR_START:
 				//					break;
-				//				case ABBREVIATION:
-				//					break;
+				case QUOTE:
+					return parseQuote();
 				//				case CLOSE_BRACE:
 				//					break;
 				//				case IDENTIFIER:
@@ -194,6 +195,20 @@ public class Parser {
 		}
 
 		return new IfClause(condExpr, thenExpr, elseExpr);
+	}
+
+	private Expression parseQuote() {
+		boolean expectCloseBrace = currentToken.getType() == TokenType.IDENTIFIER;
+
+		proceedToken();
+
+		Expression nestedExpr = parseNext();
+
+		if (expectCloseBrace && currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting closing brace to complete quote clause");
+		}
+
+		return new QuotedExpr(nestedExpr);
 	}
 
 	private Expression parseDecimalNumber() {
