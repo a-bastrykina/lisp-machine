@@ -6,4 +6,5 @@ public class SchemeKeywords {
 	public static final String IF_KEYWORD = "if";
 	public static final String QUOTE_KEYWORD = "quote";
 	public static final String SET_KEYWORD = "set!";
+	public static final String NATIVE_CALL_KEYWORD = "native-call";
 }

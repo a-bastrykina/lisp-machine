@@ -15,6 +15,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
@@ -75,8 +76,8 @@ public class Parser {
 				//					break;
 				case BOOLEAN_VALUE:
 					return parseBoolean();
-				//				case CHARACTER_VALUE:
-				//					break;
+				case CHARACTER_VALUE:
+					return parseChar();
 				//				case STRING_VALUE:
 				//					break;
 				case NUM2_VALUE:
@@ -260,4 +261,17 @@ public class Parser {
 				throw new ParseException("Failed to parse boolean for input" + currentToken.getData());
 		}
 	}
+
+	private Expression parseChar() {
+		String rawValue = currentToken.getData().substring(2);
+		switch (rawValue) {
+			case "newline":
+				return new SchemeChar('\n');
+			case "space":
+				return new SchemeChar(' ');
+			default:
+				return new SchemeChar(rawValue.charAt(0));
+		}
+	}
+
 }

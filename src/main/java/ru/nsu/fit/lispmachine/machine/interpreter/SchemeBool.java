@@ -5,8 +5,6 @@ import java.util.Objects;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 public class SchemeBool implements Expression {
-
-
     private final boolean value;
 
     public SchemeBool(boolean value) {

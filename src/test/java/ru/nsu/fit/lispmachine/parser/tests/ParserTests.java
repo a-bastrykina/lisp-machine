@@ -13,6 +13,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeBool;
+import ru.nsu.fit.lispmachine.machine.interpreter.SchemeChar;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemerString;
 import ru.nsu.fit.lispmachine.parser.Parser;
@@ -55,6 +56,30 @@ public class ParserTests {
 		var actual = parser.parse();
 		assertTrue(actual.get(0) instanceof SchemeNumber);
 		assertEquals(1.23, ((SchemeNumber) actual.get(0)).getValue().doubleValue(), 0.001);
+	}
+
+	@Test
+	public void testParseCharacter() {
+		var expected = List.of(new SchemeChar('a'));
+		var parser = new Parser(
+				List.of(new Token(TokenType.CHARACTER_VALUE, "#\\a"), new Token(TokenType.EOF)).iterator());
+		assertEquals(expected, parser.parse());
+	}
+
+	@Test
+	public void testParseNewlineCharacter() {
+		var expected = List.of(new SchemeChar('\n'));
+		var parser = new Parser(
+				List.of(new Token(TokenType.CHARACTER_VALUE, "#\\newline"), new Token(TokenType.EOF)).iterator());
+		assertEquals(expected, parser.parse());
+	}
+
+	@Test
+	public void testParseSpaceCharacter() {
+		var expected = List.of(new SchemeChar(' '));
+		var parser = new Parser(
+				List.of(new Token(TokenType.CHARACTER_VALUE, "#\\space"), new Token(TokenType.EOF)).iterator());
+		assertEquals(expected, parser.parse());
 	}
 
 	@Test
