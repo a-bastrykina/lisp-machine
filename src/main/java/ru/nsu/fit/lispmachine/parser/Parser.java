@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
+import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
@@ -37,6 +38,7 @@ public class Parser {
 		definedForms.put(SchemeKeywords.DEFINE_KEYWORD, this::parseDefine);
 		definedForms.put(SchemeKeywords.IF_KEYWORD, this::parseIf);
 		definedForms.put(SchemeKeywords.QUOTE_KEYWORD, this::parseQuote);
+		definedForms.put(SchemeKeywords.SET_KEYWORD, this::parseAssignment);
 	}
 
 	public List<Expression> parse() {
@@ -209,6 +211,23 @@ public class Parser {
 		}
 
 		return new QuotedExpr(nestedExpr);
+	}
+
+	private Expression parseAssignment() {
+		proceedToken();
+
+		if (currentToken.getType() != TokenType.IDENTIFIER) {
+			throw new ParseException("Expecting identifier to parse assignment expression");
+		}
+
+		Expression name = parseNext();
+		Expression value = parseNext();
+
+		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting closing brace to complete assignment clause");
+		}
+
+		return new Assignment((SchemerString) name, value);
 	}
 
 	private Expression parseDecimalNumber() {

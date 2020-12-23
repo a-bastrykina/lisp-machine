@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
+import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
@@ -168,6 +169,21 @@ public class ParserTests {
 		var parser = new Parser(
 				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "quote"),
 						new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.CLOSE_BRACE),
+						new Token(TokenType.EOF))
+						.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseAssignment() {
+		// (set! my-var 42)
+		var expected = List
+				.of(new Assignment(new SchemerString("my-var"), new SchemeNumber(42)));
+		var parser = new Parser(
+				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "set!"),
+						new Token(TokenType.IDENTIFIER, "my-var"), new Token(TokenType.NUM10_VALUE, "42"),
+						new Token(TokenType.CLOSE_BRACE),
 						new Token(TokenType.EOF))
 						.iterator());
 		var actual = parser.parse();
