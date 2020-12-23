@@ -7,48 +7,31 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 public class Tokenizer {
 
-	public static Stream<Token> tokenize(File file) {
+	public static TokenIterator tokenize(File file) {
 		try {
-			return createStream(new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))));
+			return new TokenIterator(new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static Stream<Token> tokenize(String inputString) {
+	public static TokenIterator tokenize(String inputString) {
 		try {
-			return createStream(
+			return new TokenIterator(
 					new BufferedReader(new InputStreamReader(new ByteArrayInputStream(inputString.getBytes()))));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static Stream<Token> createStream(BufferedReader r) throws IOException {
-		var splitr = Spliterators.spliteratorUnknownSize(new TokenIterator(r), Spliterator.NONNULL);
-		return StreamSupport.stream(splitr, false).onClose(
-				() -> {
-					try {
-						r.close();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
-		);
-	}
-
-	private static class TokenIterator implements Iterator<Token> {
+	public static class TokenIterator implements Iterator<Token> {
 		final BufferedReader r;
 		boolean eofReached = false;
 		int currentChar;
