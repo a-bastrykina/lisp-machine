@@ -93,4 +93,14 @@ public class TokenizerTests {
 				new Token(TokenType.EOF)
 		);
 	}
+
+	@Test
+	public void testTokenizeReal() {
+		test("(+ 1.2 3.4e-10)",
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "+"),
+				new Token(TokenType.REAL_VALUE, "1.2"), new Token(TokenType.REAL_VALUE, "3.4e-10"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.EOF)
+		);
+	}
 }

@@ -18,7 +18,7 @@ public enum TokenType {
 
 	OPEN_BRACE(new CharTokenRule('(')),
 	VECTOR_START(new WordTokenRule("#(")),
-	ABBREVIATION(new CharTokenRule('\'')),
+	ABBREVIATION(new CharTokenRule('\'', '`', ',')),
 	CLOSE_BRACE(new CharTokenRule(')')),
 
 	IDENTIFIER(new RegexTokenRule(IDENTIFIER_REGEX)),
@@ -28,7 +28,8 @@ public enum TokenType {
 	NUM2_VALUE(new RegexTokenRule(NUM2_VALUE_REGEX)),
 	NUM8_VALUE(new RegexTokenRule(NUM8_VALUE_REGEX)),
 	NUM10_VALUE(new RegexTokenRule(NUM10_VALUE_REGEX)),
-	NUM16_VALUE(new RegexTokenRule(NUM16_VALUE_REGEX));
+	NUM16_VALUE(new RegexTokenRule(NUM16_VALUE_REGEX)),
+	REAL_VALUE(new RegexTokenRule(REAL_VALUE_REGEX));
 
 	private final ITokenRule rule;
 

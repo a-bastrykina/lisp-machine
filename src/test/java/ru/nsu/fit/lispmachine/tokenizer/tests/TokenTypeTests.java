@@ -59,4 +59,13 @@ public class TokenTypeTests {
 	public void testRecognizeString() {
 		Assert.assertEquals(TokenType.STRING_VALUE, TokenType.recognizeType("\"Hello\\\"\n\tworld\""));
 	}
+
+	@Test
+	public void testRecognizeReal() {
+		Assert.assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("11e-10"));
+		Assert.assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType(".11e+10"));
+		Assert.assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType(".11"));
+		Assert.assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("11.110e+21"));
+		Assert.assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("11.110"));
+	}
 }
