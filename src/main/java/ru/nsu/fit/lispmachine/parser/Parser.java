@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
+import ru.nsu.fit.lispmachine.machine.interpreter.Begin;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
@@ -30,7 +32,7 @@ public class Parser {
 	Token currentToken;
 
 	public Parser(Iterator<Token> tokens) {
-		this.tokens = tokens;
+		this.tokens = Objects.requireNonNull(tokens);
 		currentToken = tokens.next();
 		initDefinedForms();
 	}
@@ -41,6 +43,7 @@ public class Parser {
 		definedForms.put(SchemeKeywords.IF_KEYWORD, this::parseIf);
 		definedForms.put(SchemeKeywords.QUOTE_KEYWORD, this::parseQuote);
 		definedForms.put(SchemeKeywords.SET_KEYWORD, this::parseAssignment);
+		definedForms.put(SchemeKeywords.BEGIN_KEYWORD, this::parseBegin);
 	}
 
 	public List<Expression> parse() {
@@ -241,6 +244,20 @@ public class Parser {
 		}
 
 		return new Assignment((SchemerString) name, value);
+	}
+
+	private Expression parseBegin() {
+		proceedToken();
+		List<Expression> operands = new ArrayList<>();
+		Expression current;
+		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			current = parseNext();
+			if (current == null) {
+				throw new ParseException("Expecting closing brace, but EOF reached");
+			}
+			operands.add(current);
+		}
+		return new Begin(operands);
 	}
 
 	private Expression parseDecimalNumber() {
