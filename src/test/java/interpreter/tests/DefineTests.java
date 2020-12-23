@@ -19,7 +19,7 @@ public class DefineTests {
 		var defineForm = new Define(new SchemeIdentifier("my-name"), new SchemeString("Alena"));
 		var executionContext = mock(ExecutionContext.class);
 		var actualExpr = defineForm.evaluate(executionContext);
-		var expectedExpr = new Application(new SchemeString("Alena"), Collections.emptyList());
+		var expectedExpr = new SchemeString("Alena");
 		assertEquals(expectedExpr, actualExpr);
 		verify(executionContext, times(1)).addDefinition(eq("my-name"), eq(actualExpr));
 	}
