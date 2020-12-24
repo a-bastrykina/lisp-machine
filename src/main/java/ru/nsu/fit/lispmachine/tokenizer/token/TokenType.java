@@ -18,7 +18,8 @@ public enum TokenType {
 
 	OPEN_BRACE(new CharTokenRule('(')),
 	VECTOR_START(new WordTokenRule("#(")),
-	ABBREVIATION(new CharTokenRule('\'', '`', ',')),
+	QUOTE(new CharTokenRule('\'')),
+	ABBREVIATION(new CharTokenRule('`', ',')),
 	CLOSE_BRACE(new CharTokenRule(')')),
 
 	IDENTIFIER(new RegexTokenRule(IDENTIFIER_REGEX)),

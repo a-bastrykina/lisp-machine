@@ -1,8 +1,12 @@
 package ru.nsu.fit.lispmachine.tokenizer.tests;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,8 +15,14 @@ import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 public class TokenizerTests {
+
+	private List<Token> collectTokens(Iterator<Token> iter) {
+		var splitr = Spliterators.spliteratorUnknownSize(iter, Spliterator.NONNULL);
+		return StreamSupport.stream(splitr, false).collect(Collectors.toList());
+	}
+
 	private void test(String input, Token... expectedTokens) {
-		List<Token> actual = Tokenizer.tokenize(input).collect(Collectors.toList());
+		List<Token> actual = collectTokens(Tokenizer.tokenize(input));
 		Assert.assertEquals(Arrays.asList(expectedTokens), actual);
 	}
 
@@ -52,7 +62,7 @@ public class TokenizerTests {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testTokenizeUnexpectedEOF() {
-		var iterator = Tokenizer.tokenize("(display \"Hello, W").iterator();
+		var iterator = Tokenizer.tokenize("(display \"Hello, W");
 		Assert.assertEquals(new Token(TokenType.OPEN_BRACE), iterator.next());
 		Assert.assertEquals(new Token(TokenType.IDENTIFIER, "display"), iterator.next());
 		iterator.next();
@@ -60,7 +70,7 @@ public class TokenizerTests {
 
 	@Test
 	public void testTokenizeAbbreviation() {
-		test("(sum-list '(6 8 100))",
+		test("(sum-list `(6 8 100))",
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "sum-list"),
 				new Token(TokenType.ABBREVIATION), new Token(TokenType.OPEN_BRACE),
 				new Token(TokenType.NUM10_VALUE, "6"), new Token(TokenType.NUM10_VALUE, "8"),

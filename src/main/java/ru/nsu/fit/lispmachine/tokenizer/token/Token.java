@@ -15,6 +15,14 @@ public class Token {
 		this(type, null);
 	}
 
+	public TokenType getType() {
+		return type;
+	}
+
+	public String getData() {
+		return data;
+	}
+
 	@Override public boolean equals(Object o) {
 		if (this == o)
 			return true;
