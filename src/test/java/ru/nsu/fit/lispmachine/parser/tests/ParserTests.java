@@ -19,6 +19,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
@@ -263,6 +264,23 @@ public class ParserTests {
 				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "begin"),
 						new Token(TokenType.NUM10_VALUE, "1"), new Token(TokenType.NUM10_VALUE, "2"),
 						new Token(TokenType.NUM10_VALUE, "3"),
+						new Token(TokenType.CLOSE_BRACE),
+						new Token(TokenType.EOF))
+						.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseJavaCall() {
+		// (java-call "Double" "sum" 5 10)
+		var expected = List
+				.of(new JavaMethodCall(new SchemeString("Double"), new SchemeString("sum"),
+						List.of(new SchemeNumber(5), new SchemeNumber(10))));
+		var parser = new Parser(
+				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "java-call"),
+						new Token(TokenType.STRING_VALUE, "\"Double\""), new Token(TokenType.STRING_VALUE, "\"sum\""),
+						new Token(TokenType.NUM10_VALUE, "5"), new Token(TokenType.NUM10_VALUE, "10"),
 						new Token(TokenType.CLOSE_BRACE),
 						new Token(TokenType.EOF))
 						.iterator());

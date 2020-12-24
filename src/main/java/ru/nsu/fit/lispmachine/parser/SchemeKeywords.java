@@ -7,5 +7,5 @@ public class SchemeKeywords {
 	public static final String QUOTE_KEYWORD = "quote";
 	public static final String SET_KEYWORD = "set!";
 	public static final String BEGIN_KEYWORD = "begin";
-	public static final String NATIVE_CALL_KEYWORD = "native-call";
+	public static final String JAVA_CALL_KEYWORD = "java-call";
 }
