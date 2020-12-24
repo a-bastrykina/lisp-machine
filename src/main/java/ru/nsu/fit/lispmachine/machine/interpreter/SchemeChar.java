@@ -8,7 +8,7 @@ public class SchemeChar implements Expression {
 	Character value;
 
 	public SchemeChar(Character value) {
-		this.value = value;
+		this.value = Objects.requireNonNull(value);
 	}
 
 	@Override public Expression evaluate(ExecutionContext context) {

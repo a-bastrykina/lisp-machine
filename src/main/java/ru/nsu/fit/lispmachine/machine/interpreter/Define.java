@@ -12,9 +12,9 @@ public class Define implements Expression {
 	private final Expression body;
 
 	public Define(SchemeIdentifier name, List<Expression> parameters, Expression body) {
-		this.name = name;
-		this.parameters = parameters;
-		this.body = body;
+		this.name = Objects.requireNonNull(name);
+		this.parameters = Objects.requireNonNull(parameters);
+		this.body = Objects.requireNonNull(body);
 		if (parameters.stream().anyMatch(e -> !(e instanceof SchemeIdentifier))) {
 			throw new IllegalArgumentException("Define arguments must be strings!");
 		}
