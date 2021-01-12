@@ -26,8 +26,7 @@ public class Define implements Expression {
 
 	@Override
 	public Expression evaluate(ExecutionContext context) {
-		var lambda = new Lambda(parameters, body);
-		var evaluated = lambda.evaluate(context);
+		var evaluated = body.evaluate(context);
 		context.addDefinition(name.toString(), evaluated);
 		return evaluated;
 	}

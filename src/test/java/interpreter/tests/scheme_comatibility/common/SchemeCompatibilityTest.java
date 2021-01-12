@@ -66,6 +66,16 @@ public class SchemeCompatibilityTest {
     }
 
     @Test
+    public void baseDefineTest() {
+        var prog = "(define a 1)";
+        machine.simpleTestRun(prog, "1");
+        var prog1 = "(define a (+ 2 2)) \n a";
+        machine.simpleTestRun(prog1, "4");
+        var prog2 = "(define b (+ 2 a)) \n b";
+        machine.simpleTestRun(prog2, "6");
+    }
+
+    @Test
     public void carConsCdrNumberListTest() {
         var prog = "(define one-through-four (list 1 2 3 4))" +
                     "one-through-four";
