@@ -164,11 +164,11 @@ public class SchemeCompatibilityTest {
                 + "\n ((compose list double) 5)";
         machine.simpleTestRun(prog2, "(10)");
 
-//        var prog3 = "(define apply-twice (lambda (f) (compose f f)))\n ((apply-twice double) 5)";
-//        machine.simpleTestRun(prog3, "20");
+        var prog3 = "(define apply-twice (lambda (f) (compose f f)))\n ((apply-twice double) 5)";
+        machine.simpleTestRun(prog3, "20");
 
-//        var prog4 = "((apply-twice (apply-twice double)) 5)";
-//        machine.simpleTestRun(prog4, "80");
+        var prog4 = "((apply-twice (apply-twice double)) 5)";
+        machine.simpleTestRun(prog4, "80");
 //
         var factorial = "(define fact (lambda (n) (if (< n 2) 1 (* n (fact (- n 1)))))) \n (fact 3)";
         machine.simpleTestRun(factorial, "6");
