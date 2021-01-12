@@ -2,9 +2,7 @@ package ru.nsu.fit.lispmachine.parser.tests;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
 import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
@@ -23,6 +21,8 @@ import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTests {
 
@@ -129,14 +129,14 @@ public class ParserTests {
 		assertEquals(expected, actual);
 	}
 
-	@Test(expected = ParseException.class)
+	@Test()
 	public void testParseApplication_Fail() {
 		// (+ 5
 		var expected = List
 				.of(new Application(new SchemeIdentifier("+"), List.of(new SchemeNumber(5), new SchemeNumber(6))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "+"),
 				new Token(TokenType.NUM10_VALUE, "5"), new Token(TokenType.EOF)).iterator());
-		parser.parse();
+		assertThrows(ParseException.class, parser::parse);
 	}
 
 	@Test

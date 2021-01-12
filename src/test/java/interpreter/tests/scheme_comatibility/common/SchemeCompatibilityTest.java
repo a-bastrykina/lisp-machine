@@ -1,16 +1,14 @@
 package interpreter.tests.scheme_comatibility.common;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.machine.execution_context.SchemeContext;
-import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.Tokenizer;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TestSchemeMachine {
     private final SchemeContext context = new SchemeContext();
@@ -173,6 +171,26 @@ public class SchemeCompatibilityTest {
         var factorial = "(define fact (lambda (n) (if (< n 2) 1 (* n (fact (- n 1)))))) \n (fact 3)";
         machine.simpleTestRun(factorial, "6");
 //
+        //todo: long math
 //        machine.simpleTestRun("(fact 50)", "30414093201713378043612608166064768844377641568960512000000000000");
+
+        var prog5 = "(define (combine f)\n" +
+                "  (lambda (x y)\n" +
+                "    (if (null? x) '()\n" +
+                "      (f (list (car x) (car y))\n" +
+                "         ((combine f) (cdr x) (cdr y))))))\n" +
+                "(define zip (combine cons))\n" +
+                "(zip (list 1 2 3 4) (list 5 6 7 8))";
+        machine.simpleTestRun(prog5, "((1 5) (2 6) (3 7) (4 8))");
+
+    }
+
+    @Test
+    public void calcWithNotNumbersTest() {
+        var prog = "(define (f x) (* 2 x))\n (f 3)";
+        machine.simpleTestRun(prog, "6");
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> machine.simpleTestRun("(f '())","6"));
+        assertEquals("* called with non numbers arguments", exception.getMessage());
     }
 }
