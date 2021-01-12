@@ -169,6 +169,25 @@ public class ParserTests {
 		assertEquals(expected, actual);
 	}
 
+    @Test
+    public void testParseDefineQuoted() {
+        // (define numbers '(1 2))
+        var expected = List
+                .of(new Define(new SchemeIdentifier("numbers"),
+                        new QuotedExpr(new SchemeList(List.of(new SchemeNumber(1), new SchemeNumber(2))))));
+
+        var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
+                new Token(TokenType.IDENTIFIER, "numbers"),
+                new Token(TokenType.QUOTE),
+                new Token(TokenType.OPEN_BRACE),
+                new Token(TokenType.NUM10_VALUE, "1"),
+                new Token(TokenType.NUM10_VALUE, "2"),
+                new Token(TokenType.CLOSE_BRACE),
+                new Token(TokenType.CLOSE_BRACE)).iterator());
+        var actual = parser.parse();
+        assertEquals(expected, actual);
+    }
+
 	@Test
 	public void testParseDefineWithParams() {
 		// (define (square r) (* r r))
