@@ -1,4 +1,4 @@
-package interpreter.tests;
+package ru.nsu.fit.lispmachine.interpreter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

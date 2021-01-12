@@ -1,4 +1,4 @@
-package interpreter.tests;
+package ru.nsu.fit.lispmachine.interpreter;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package interpreter.tests.scheme_comatibility.common;
+package ru.nsu.fit.lispmachine.interpreter.scheme_comatibility.common;
 
 import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.machine.execution_context.SchemeContext;

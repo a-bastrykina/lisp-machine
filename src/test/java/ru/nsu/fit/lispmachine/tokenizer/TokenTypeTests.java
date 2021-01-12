@@ -1,4 +1,4 @@
-package ru.nsu.fit.lispmachine.tokenizer.tests;
+package ru.nsu.fit.lispmachine.tokenizer;
 
 import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
