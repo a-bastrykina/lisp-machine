@@ -30,4 +30,9 @@ public class Plus extends NativeCall {
             return new SchemeNumber(res);
         }
     }
+
+    @Override
+    public String toString() {
+        return "#<Function +>";
+    }
 }
