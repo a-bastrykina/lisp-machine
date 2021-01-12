@@ -35,6 +35,7 @@ public class SchemeCompatibilityTest {
 
     @Test
     public void testMakeRatDisplay() {
+        //todo it's parser fail
         var prog = "(define (make-rat n d) (cons n d))" +
                 "(define (numer x) (car x))" +
                 "(define (denom x) (cdr x))" +
@@ -83,13 +84,34 @@ public class SchemeCompatibilityTest {
         var prog1 = "(car one-through-four)";
         machine.simpleTestRun(prog1, "1");
         var prog2 = "(cdr one-through-four)";
-        machine.simpleTestRun(prog2, "( 2 3 4)");
+        machine.simpleTestRun(prog2, "(2 3 4)");
         var prog3 = "(car (cdr one-through-four))";
         machine.simpleTestRun(prog3, "2");
         var prog4 = "(cons 10 one-through-four)";
         machine.simpleTestRun(prog4, "(10 1 2 3 4)");
         var prog5 = "(cons 5 one-through-four)";
-        machine.simpleTestRun(prog5, "(5 1 2 3 4");
+        machine.simpleTestRun(prog5, "(5 1 2 3 4)");
+    }
+
+    @Test
+    public void consAsPairs() {
+        var prog = "(define lst1 '(1 2 3))\n" +
+                "(define lst2 '(4 5))\n" +
+                "\n" +
+                "(cons (car lst1) (car lst2))";
+        machine.simpleTestRun(prog, "(1 . 4)");
+        var prog1 =
+                "(list (cons (car lst1) (car lst2))\n" +
+                "      (cons (car (cdr lst1)) (car (cdr lst2))))";
+        machine.simpleTestRun(prog1, "((1 . 4) (2 . 5))");
+        var prog2 = "(cons 2 '())";
+        machine.simpleTestRun(prog2, "(2)");
+        var prog3 = "(cons 3 (cons 2 '()))";
+        machine.simpleTestRun(prog3, "(3 2)");
+
+        //todo: it's parser fail
+        var prog4 = "(cons (cons 3 (cons 2 '())) 'bla)";
+        machine.simpleTestRun(prog4, "((3 2) . bla)");
     }
 
 }

@@ -5,6 +5,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ public class CdrCall extends NativeCall {
         if (!(args.get(0) instanceof SchemeList)) {
             throw new IllegalArgumentException("cdr requires list as argument");
         }
-        var tmp = ((SchemeList) args.get(0)).getValues();
+        var tmp = new ArrayList<>(((SchemeList) args.get(0)).getValues());
         if (tmp.size() == 0) {
             throw new IllegalArgumentException("cdr on empty list");
         }
