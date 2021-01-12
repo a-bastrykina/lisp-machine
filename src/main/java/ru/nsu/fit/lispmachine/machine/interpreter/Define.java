@@ -5,6 +5,7 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class Define implements Expression {
 	private final SchemeIdentifier name;
@@ -26,9 +27,12 @@ public class Define implements Expression {
 
 	@Override
 	public Expression evaluate(ExecutionContext context) {
-		var evaluated = body.evaluate(context);
-		context.addDefinition(name.toString(), evaluated);
-		return evaluated;
+	    Function<Expression, Expression> action = e -> {
+	        var evaluated = e.evaluate(context);
+	        context.addDefinition(name.toString(), evaluated);
+	        return evaluated;
+        };
+        return parameters.isEmpty() ? action.apply(body) : action.apply(new Lambda(parameters, body));
 	}
 
 	@Override public boolean equals(Object o) {

@@ -74,6 +74,9 @@ public class SchemeCompatibilityTest {
         machine.simpleTestRun(prog1, "4");
         var prog2 = "(define b (+ 2 a)) \n b";
         machine.simpleTestRun(prog2, "6");
+        var prog3 = "(define (plus a b) (+ a b)) \n (plus 1 1)";
+        machine.simpleTestRun(prog3, "2");
+
     }
 
     @Test
