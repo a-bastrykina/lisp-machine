@@ -79,7 +79,7 @@ public class SchemeCompatibilityTest {
     @Test
     public void carConsCdrNumberListTest() {
         var prog = "(define one-through-four (list 1 2 3 4))" +
-                    "one-through-four";
+                "one-through-four";
         machine.simpleTestRun(prog, "(1 2 3 4)");
         var prog1 = "(car one-through-four)";
         machine.simpleTestRun(prog1, "1");
@@ -102,7 +102,7 @@ public class SchemeCompatibilityTest {
         machine.simpleTestRun(prog, "(1 . 4)");
         var prog1 =
                 "(list (cons (car lst1) (car lst2))\n" +
-                "      (cons (car (cdr lst1)) (car (cdr lst2))))";
+                        "      (cons (car (cdr lst1)) (car (cdr lst2))))";
         machine.simpleTestRun(prog1, "((1 . 4) (2 . 5))");
         var prog2 = "(cons 2 '())";
         machine.simpleTestRun(prog2, "(2)");
@@ -114,4 +114,34 @@ public class SchemeCompatibilityTest {
         machine.simpleTestRun(prog4, "((3 2) . bla)");
     }
 
+    @Test
+    public void mapTest() {
+        //todo: parser fail
+        //(define nil '())
+
+        var prog =
+                "(define map (lambda (proc items))" +
+                "  (if (null? items)" +
+                "      '()" +
+                        "'()))";
+//                "      (cons (proc (car items))" +
+//                "            (map proc (cdr items)))))";
+
+//                "(map abs (list -10 2.5 -11 17))";
+
+        // todo it's parser fail
+//        "(map abs (list -10 2.5 -11.6 17))\n";
+
+        machine.simpleTestRun(prog, "(10 2.5 11.6 17)");
+//                "; expect (10 2.5 11.6 17)\n" +
+//                "\n" +
+//                "(map (lambda (x) (* x x))\n" +
+//                "     (list 1 2 3 4))\n";
+//                "; expect (1 4 9 16)\n" +
+//                "(define (scale-list items factor)\n" +
+//                "  (map (lambda (x) (* x factor))\n" +
+//                "       items))\n" +
+//                "(scale-list (list 1 2 3 4 5) 10)\n" +
+//                "; expect (10 20 30 40 50)";
+    }
 }
