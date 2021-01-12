@@ -32,6 +32,7 @@ public class SchemeContext implements ExecutionContext {
         bindings.put("<", new Less());
         bindings.put("=", new Equal());
         bindings.put("not", new Not());
+
         bindings.put("list", new SchemeListCall());
         bindings.put("cons", new ConsCall());
         bindings.put("car", new CarCall());

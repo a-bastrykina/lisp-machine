@@ -15,13 +15,6 @@ public class Application implements Expression {
 	private final Expression operator;
 
 	public Application(Expression operator, List<Expression> arguments) {
-
-		// допустим парсим (+ 5 5)
-		// это application, у которого operator=String(+), Arguments = [Number(5), Number(5)]
-
-		//        допустим парсим ((lambda (r) (* r r)) 5)
-
-		// это application,  у которого оператор это lambda(args= [String(r)], body = Application...), args = Number(5)
 		this.operator = Objects.requireNonNull(operator);
 		this.arguments = Objects.requireNonNull(arguments);
 	}
@@ -35,7 +28,7 @@ public class Application implements Expression {
 	@Override
 	public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
 		var args = applyArguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-		System.out.println("arguments = " + Arrays.toString(arguments.toArray()));
+//		System.out.println("?arguments = " + Arrays.toString(arguments.toArray()));
 		var newContext = context
 				.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
 		return this.operator.evaluate(newContext);

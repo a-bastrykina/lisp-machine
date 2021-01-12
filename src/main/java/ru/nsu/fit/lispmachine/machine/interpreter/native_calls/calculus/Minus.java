@@ -5,7 +5,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +17,10 @@ public class Minus extends NativeCall {
             throw new IllegalArgumentException("- called without arguments");
         }
         if (args.size() == 1) {
-            return new SchemeNumber(-((SchemeNumber) args.get(0)).getValue().doubleValue());
+            var newArgs = new ArrayList<Expression>();
+            newArgs.add(new SchemeNumber(0));
+            newArgs.add(arguments.get(0));
+            return new Minus().apply(newArgs, context);
         }
 
         if (!args.stream().allMatch(a -> a instanceof SchemeNumber)) {
