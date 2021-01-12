@@ -4,16 +4,12 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Lambda implements Expression {
 	private final List<Expression> parameters;
 	private final Expression body;
 
 	public Lambda(List<Expression> parameters, Expression body) {
-		//        (lambda (r) (* r r)) ->
-		//        parameter=[String(r)],
-		//        body=Application(Operator=Symbol(*), Args =[String(r), String(r)]
 		this.parameters = Objects.requireNonNull(parameters);
 		this.body = Objects.requireNonNull(body);
 	}

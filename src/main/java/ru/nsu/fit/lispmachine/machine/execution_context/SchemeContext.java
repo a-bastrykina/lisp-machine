@@ -40,7 +40,7 @@ public class SchemeContext implements ExecutionContext {
     @Override
     public Expression lookupVariable(String name) {
         if (!bindings.containsKey(name)) {
-            throw new IllegalArgumentException("Definition with name " + name + "not found");
+            throw new IllegalArgumentException("Definition with name " + name + " not found");
         }
         return bindings.get(name);
     }

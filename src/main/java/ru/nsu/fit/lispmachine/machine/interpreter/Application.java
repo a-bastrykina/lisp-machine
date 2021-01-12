@@ -2,16 +2,12 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Application implements Expression {
-	protected List<Expression> arguments;
-	protected ExecutionContext context;
+    protected List<Expression> arguments;
 	private final Expression operator;
 
 	public Application(Expression operator, List<Expression> arguments) {
@@ -19,7 +15,7 @@ public class Application implements Expression {
 		this.arguments = Objects.requireNonNull(arguments);
 	}
 
-	@Override
+    @Override
 	public Expression evaluate(ExecutionContext context) {
 		var op = operator.evaluate(context);
 		return op.apply(arguments, context);
@@ -28,7 +24,6 @@ public class Application implements Expression {
 	@Override
 	public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
 		var args = applyArguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-//		System.out.println("?arguments = " + Arrays.toString(arguments.toArray()));
 		var newContext = context
 				.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
 		return this.operator.evaluate(newContext);

@@ -145,4 +145,34 @@ public class SchemeCompatibilityTest {
                 "(scale-list (list 1 2 3 4 5) 10)\n";
         machine.simpleTestRun(prog2, "(10 20 30 40 50)");
     }
+
+    @Test
+    public void lenTest() {
+        var prog1 = "(define (len s)\n" +
+                "  (if (null? s)\n" +
+                "    0\n" +
+                "    (+ 1 (len (cdr s))))) \n (len '(1 2 3 4 5))";
+        machine.simpleTestRun(prog1, "5");
+    }
+
+    @Test
+    public void peterNorvigTest() {
+        var prog1 = "(define double (lambda (z) (* 2 z))) \n (double 5)";
+        machine.simpleTestRun(prog1, "10");
+
+        var prog2 = "(define compose (lambda (f g) (lambda (x) (f (g x)))))"
+                + "\n ((compose list double) 5)";
+        machine.simpleTestRun(prog2, "(10)");
+
+//        var prog3 = "(define apply-twice (lambda (f) (compose f f)))\n ((apply-twice double) 5)";
+//        machine.simpleTestRun(prog3, "20");
+
+//        var prog4 = "((apply-twice (apply-twice double)) 5)";
+//        machine.simpleTestRun(prog4, "80");
+//
+        var factorial = "(define fact (lambda (n) (if (< n 2) 1 (* n (fact (- n 1)))))) \n (fact 3)";
+        machine.simpleTestRun(factorial, "6");
+//
+//        machine.simpleTestRun("(fact 50)", "30414093201713378043612608166064768844377641568960512000000000000");
+    }
 }
