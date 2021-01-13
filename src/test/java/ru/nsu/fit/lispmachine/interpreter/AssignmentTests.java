@@ -1,15 +1,13 @@
-package interpreter.tests;
+package ru.nsu.fit.lispmachine.interpreter;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class AssignmentTests {
 

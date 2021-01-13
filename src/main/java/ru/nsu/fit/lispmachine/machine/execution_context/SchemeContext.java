@@ -6,10 +6,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Division
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Minus;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Multiply;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Plus;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.CarCall;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.CdrCall;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.ConsCall;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.SchemeListCall;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.*;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Equal;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Less;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.More;
@@ -32,16 +29,18 @@ public class SchemeContext implements ExecutionContext {
         bindings.put("<", new Less());
         bindings.put("=", new Equal());
         bindings.put("not", new Not());
+
         bindings.put("list", new SchemeListCall());
         bindings.put("cons", new ConsCall());
         bindings.put("car", new CarCall());
         bindings.put("cdr", new CdrCall());
+        bindings.put("null?", new CheckEmptyListCall());
     }
 
     @Override
     public Expression lookupVariable(String name) {
         if (!bindings.containsKey(name)) {
-            throw new IllegalArgumentException("Definition with name " + name + "not found");
+            throw new IllegalArgumentException("Definition with name " + name + " not found");
         }
         return bindings.get(name);
     }

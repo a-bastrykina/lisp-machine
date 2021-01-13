@@ -31,4 +31,7 @@ public class SchemeString implements Expression {
 	@Override public Expression evaluate(ExecutionContext context) {
 		return this;
 	}
+
+    @Override
+    public String toString() { return value; }
 }

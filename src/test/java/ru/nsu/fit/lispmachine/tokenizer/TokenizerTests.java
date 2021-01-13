@@ -1,4 +1,4 @@
-package ru.nsu.fit.lispmachine.tokenizer.tests;
+package ru.nsu.fit.lispmachine.tokenizer;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -8,11 +8,13 @@ import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.tokenizer.Tokenizer;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TokenizerTests {
 
@@ -23,7 +25,7 @@ public class TokenizerTests {
 
 	private void test(String input, Token... expectedTokens) {
 		List<Token> actual = collectTokens(Tokenizer.tokenize(input));
-		Assert.assertEquals(Arrays.asList(expectedTokens), actual);
+		assertEquals(Arrays.asList(expectedTokens), actual);
 	}
 
 	@Test
@@ -60,12 +62,12 @@ public class TokenizerTests {
 		);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testTokenizeUnexpectedEOF() {
 		var iterator = Tokenizer.tokenize("(display \"Hello, W");
-		Assert.assertEquals(new Token(TokenType.OPEN_BRACE), iterator.next());
-		Assert.assertEquals(new Token(TokenType.IDENTIFIER, "display"), iterator.next());
-		iterator.next();
+		assertEquals(new Token(TokenType.OPEN_BRACE), iterator.next());
+		assertEquals(new Token(TokenType.IDENTIFIER, "display"), iterator.next());
+		assertThrows(IllegalArgumentException.class, iterator::next);
 	}
 
 	@Test

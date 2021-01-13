@@ -2,56 +2,51 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Application implements Expression {
-	protected List<Expression> arguments;
-	protected ExecutionContext context;
-	private final Expression operator;
+    protected List<Expression> arguments;
+    private final Expression operator;
+    private ExecutionContext selfContext;
 
-	public Application(Expression operator, List<Expression> arguments) {
+    public Application(Expression operator, List<Expression> arguments) {
+        this.operator = Objects.requireNonNull(operator);
+        this.arguments = Objects.requireNonNull(arguments);
+    }
 
-		// допустим парсим (+ 5 5)
-		// это application, у которого operator=String(+), Arguments = [Number(5), Number(5)]
+    public Application(Expression operator, List<Expression> arguments, ExecutionContext specialContext) {
+        this.operator = Objects.requireNonNull(operator);
+        this.arguments = Objects.requireNonNull(arguments);
+        this.selfContext = specialContext;
+    }
 
-		//        допустим парсим ((lambda (r) (* r r)) 5)
+    @Override
+    public Expression evaluate(ExecutionContext context) {
+        var op = operator.evaluate(context);
+        return op.apply(arguments, context);
+    }
 
-		// это application,  у которого оператор это lambda(args= [String(r)], body = Application...), args = Number(5)
-		this.operator = Objects.requireNonNull(operator);
-		this.arguments = Objects.requireNonNull(arguments);
-	}
+    @Override
+    public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
+        var args = applyArguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
+        Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
+        var newContext = (selfContext != null) ? extend.apply(selfContext) : extend.apply(context);
+        return this.operator.evaluate(newContext);
+    }
 
-	@Override
-	public Expression evaluate(ExecutionContext context) {
-		var op = operator.evaluate(context);
-		return op.apply(arguments, context);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Application that = (Application) o;
+        return Objects.equals(arguments, that.arguments) && Objects.equals(operator, that.operator) && Objects.equals(selfContext, that.selfContext);
+    }
 
-	@Override
-	public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
-		var args = applyArguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-		System.out.println("arguments = " + Arrays.toString(arguments.toArray()));
-		var newContext = context
-				.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
-		return this.operator.evaluate(newContext);
-	}
-
-	@Override public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Application that = (Application) o;
-		return Objects.equals(arguments, that.arguments) &&
-				Objects.equals(operator, that.operator);
-	}
-
-	@Override public int hashCode() {
-		return Objects.hash(arguments, operator);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(arguments, operator, selfContext);
+    }
 }

@@ -2,6 +2,7 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,7 +11,7 @@ public class SchemeList implements Expression {
 	private final List<Expression> values;
 
 	public SchemeList(List<Expression> values) {
-		this.values = Objects.requireNonNull(values);
+	    this.values = Objects.requireNonNull(values);
 	}
 
 	public List<Expression> getValues() {
@@ -47,3 +48,4 @@ public class SchemeList implements Expression {
 		return Objects.hash(values);
 	}
 }
+
