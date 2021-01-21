@@ -45,7 +45,7 @@ public class HomeMadeTests {
     @Test
     public void testSetWorks() {
         var setPart = "(set! r2 (lambda (r) (* r r)))";
-        var exp = assertThrows(IllegalArgumentException.class, ()->machine.simpleTestRun(setPart, ""));
+        var exp = assertThrows(IllegalArgumentException.class, () -> machine.simpleTestRun(setPart, ""));
         assertEquals(exp.getMessage(), "Definition with name r2 not found");
         var prog = "(define r2 10) \n r2";
         machine.simpleTestRun(prog, "10");
@@ -58,4 +58,12 @@ public class HomeMadeTests {
         machine.simpleTestRun(prog, "3.0");
     }
 
+    @Test
+    public void lazyExecutionTest() {
+        var prog = "(define (try a b) " +
+                            "(if (= a 0) 1 b)) \n (try 0 (/ 1 0))";
+        var exception = assertThrows(IllegalArgumentException.class,
+                () -> machine.simpleTestRun(prog, "1"));
+        assertEquals("Division by zero", exception.getMessage());
+    }
 }
