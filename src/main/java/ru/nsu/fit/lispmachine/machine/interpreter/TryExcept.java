@@ -2,16 +2,19 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
+import java.util.List;
 import java.util.Objects;
 
 public class TryExcept implements Expression {
 
     private final Expression body;
-    private final Expression catchBody;
+    private final List<SchemeIdentifier> exceptionNames;
+    private final List<Expression> catchBodies;
 
-    public TryExcept(Expression body, Expression catchBody) {
+    public TryExcept(Expression body, List<SchemeIdentifier> exceptionNames, List<Expression> catchBodies) {
         this.body = body;
-        this.catchBody = catchBody;
+        this.exceptionNames = exceptionNames;
+        this.catchBodies = catchBodies;
     }
 
 	@Override
@@ -20,7 +23,12 @@ public class TryExcept implements Expression {
             return body.evaluate(context);
         }
         catch (Exception exc) {
-            return catchBody.evaluate(context);
+            for (int i = 0; i < exceptionNames.size(); i++) {
+                if (("class " + exceptionNames.get(i).toString()).equals(exc.getClass().toString())) {
+                    return catchBodies.get(i).evaluate(context);
+                }
+            }
+            throw new IllegalArgumentException(exc);
         }
 	}
 
@@ -29,11 +37,11 @@ public class TryExcept implements Expression {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TryExcept tryExcept = (TryExcept) o;
-        return Objects.equals(body, tryExcept.body) && Objects.equals(catchBody, tryExcept.catchBody);
+        return Objects.equals(body, tryExcept.body) && Objects.equals(exceptionNames, tryExcept.exceptionNames) && Objects.equals(catchBodies, tryExcept.catchBodies);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(body, catchBody);
+        return Objects.hash(body, exceptionNames, catchBodies);
     }
 }
