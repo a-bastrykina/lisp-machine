@@ -55,6 +55,7 @@ public class JavaMethodCall extends NativeCall {
             if (return_value_type.equals("double")) {
                 return new SchemeNumber((Number) returned_value);
             }
+            return new SchemeString(returned_value == null? "'()" : returned_value.toString() );
 
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Unknown class " + className);
