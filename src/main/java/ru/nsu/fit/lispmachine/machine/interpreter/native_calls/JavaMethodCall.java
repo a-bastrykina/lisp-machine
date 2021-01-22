@@ -1,5 +1,6 @@
 package ru.nsu.fit.lispmachine.machine.interpreter.native_calls;
 
+import ru.nsu.fit.lispmachine.exceptions.CompatibilityException;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
@@ -59,8 +60,11 @@ public class JavaMethodCall extends NativeCall {
 
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Unknown class " + className);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
+        }
+        catch (InvocationTargetException e) {
+            throw new CompatibilityException(e.getCause());
         }
         return null;
     }
