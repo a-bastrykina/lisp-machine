@@ -16,8 +16,6 @@ public class Lambda implements Expression {
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        if (parameters.isEmpty())
-            return body;
         return new Application(body, parameters, context);
     }
 
