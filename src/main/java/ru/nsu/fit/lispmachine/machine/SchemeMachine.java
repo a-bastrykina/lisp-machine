@@ -1,5 +1,6 @@
 package ru.nsu.fit.lispmachine.machine;
 
+import ru.nsu.fit.lispmachine.exceptions.CompatibilityException;
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import ru.nsu.fit.lispmachine.machine.execution_context.SchemeContext;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
@@ -43,7 +44,10 @@ public class SchemeMachine {
                 if (res != null)
                     System.out.println(res);
             } catch (IOException ignored) {
-            } catch (Exception m) {
+            } catch (CompatibilityException exc) {
+                System.out.println("Exception " + exc.getRootCase() + " were raised: " + " ; line:" + lineNumber);
+            }
+            catch (Exception m) {
                 System.out.println("Error: " + m.getMessage() + " ; line:" + lineNumber);
             }
         }
