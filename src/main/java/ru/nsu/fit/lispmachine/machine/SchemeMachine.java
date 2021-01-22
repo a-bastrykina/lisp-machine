@@ -46,8 +46,7 @@ public class SchemeMachine {
             } catch (IOException ignored) {
             } catch (CompatibilityException exc) {
                 System.out.println("Exception " + exc.getRootCase() + " were raised: " + " ; line:" + lineNumber);
-            }
-            catch (Exception m) {
+            } catch (Exception m) {
                 System.out.println("Error: " + m.getMessage() + " ; line:" + lineNumber);
             }
         }
