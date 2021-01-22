@@ -17,6 +17,8 @@ public interface Expression {
 
     //todo maybe isTrueRedundant
     default Object castTo(String clazzName) {
+        if (clazzName.equals("java.lang.String"))
+            return toString();
         throw new IllegalArgumentException("Cannot cast this to " + clazzName);
     }
 }

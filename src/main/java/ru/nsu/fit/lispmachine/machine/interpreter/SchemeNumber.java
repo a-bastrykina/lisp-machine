@@ -45,6 +45,9 @@ public class SchemeNumber implements Expression {
                 return value.intValue();
             }
         }
+        if (className.equals("java.lang.String")) {
+            return value.toString();
+        }
         return null;
     }
 
