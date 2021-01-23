@@ -6,12 +6,12 @@ import java.util.List;
 
 /**
  * An interface to represent an execution context under
- * which a particular expression is executed.
+ * which a particular expression is executed
  */
 public interface ExecutionContext {
 
     /**
-     * Get value of variable from the context.
+     * Get value of variable from the context
      * @param name
      * @return
      */
@@ -19,7 +19,7 @@ public interface ExecutionContext {
 
     /*
      * Get a context based on this and
-     * extended with new definitions.
+     * extended with new definitions
      * @param variables
      * @param values
      * @return execution context
@@ -27,7 +27,7 @@ public interface ExecutionContext {
     ExecutionContext extendContext(List<String> variables, List<Expression> values);
 
     /**
-     * Add a definition to the context.
+     * Add a definition to the context
      * @param name
      * @param value
      */
@@ -35,7 +35,7 @@ public interface ExecutionContext {
 
     /**
      * Forcing calculations in when interpreter mode is lazy.
-     * If not lazy, returns its arg.
+     * If not lazy, returns its arg
      * @param expression
      * @return
      */

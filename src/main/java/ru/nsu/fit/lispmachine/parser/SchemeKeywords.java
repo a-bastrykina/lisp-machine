@@ -2,7 +2,7 @@ package ru.nsu.fit.lispmachine.parser;
 
 /**
  * Class that holds special forms names
- * which are supported by the language.
+ * which are supported by the language
  */
 public class SchemeKeywords {
 	public static final String LAMBDA_KEYWORD = "lambda";

@@ -30,7 +30,7 @@ import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
 /**
  * Parser class. Using this class, you can transform
- * stream of tokens into Abstract Syntax Tree.
+ * stream of tokens into Abstract Syntax Tree
  */
 public class Parser {
 
@@ -40,8 +40,8 @@ public class Parser {
 	Token currentToken;
 
 	/**
-	 * Creates parser.
-	 * @param tokens token iterator.
+	 * Creates parser
+	 * @param tokens token iterator
 	 */
 	public Parser(Iterator<Token> tokens) {
 		this.tokens = Objects.requireNonNull(tokens);
@@ -61,8 +61,8 @@ public class Parser {
 	}
 
 	/**
-	 * Parse input tokens.
-	 * @return list of expressions.
+	 * Parse input tokens
+	 * @return list of expressions
 	 */
 	public List<Expression> parse() {
 		List<Expression> result = new ArrayList<>();

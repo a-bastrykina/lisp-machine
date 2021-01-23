@@ -16,7 +16,7 @@ import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 /**
  * Tokenizer class.
  * Using this class, you can transform text data (from file or String object)
- * into stream of tokens.
+ * into stream of tokens
  */
 public class Tokenizer {
 
@@ -48,7 +48,7 @@ public class Tokenizer {
 	}
 
 	/**
-	 * Class that represents an iterator of tokens.
+	 * Class that represents an iterator of tokens
 	 */
 	public static class TokenIterator implements Iterator<Token> {
 		private final BufferedReader r;
@@ -70,7 +70,7 @@ public class Tokenizer {
 		}
 
 		/**
-		 * Yields with a single token on each call.
+		 * Yields with a single token on each call
 		 * @return token
 		 * @throws TokenizeException if an IO error occured
 		 */

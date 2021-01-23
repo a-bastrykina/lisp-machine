@@ -8,8 +8,8 @@ public class SchemeMachineUtils {
 	private static final BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
 
 	/**
-	 * Read line from the standart input.
-	 * Called using java-call special form.
+	 * Read line from the standart input
+	 * Called using java-call special form
 	 *
 	 * @return
 	 * @throws IOException
@@ -20,10 +20,7 @@ public class SchemeMachineUtils {
 
 	/**
 	 * Write line into the standart output.
-	 * Called using java-call special form.
-	 *
-	 * @return
-	 * @throws IOException
+	 * Called using java-call special form
 	 */
 	public static void writeString(String str) {
 		System.out.print(str);
@@ -31,7 +28,7 @@ public class SchemeMachineUtils {
 
 	/**
 	 * Raise java exception.
-	 * Called using java-call special form.
+	 * Called using java-call special form
 	 *
 	 * @param name exception name
 	 * @param message exception message
@@ -43,7 +40,7 @@ public class SchemeMachineUtils {
 	}
 
 	/**
-	 * Get Scheme standart library.
+	 * Get Scheme standart library
 	 *
 	 * @return standart library written in Scheme
 	 */

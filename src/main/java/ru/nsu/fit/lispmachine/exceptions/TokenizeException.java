@@ -1,7 +1,7 @@
 package ru.nsu.fit.lispmachine.exceptions;
 
 /**
- * Class to represent all exceptions occurred while tokenizing.
+ * Class to represent all exceptions occurred while tokenizing
  */
 public class TokenizeException extends RuntimeException {
 	public TokenizeException() {

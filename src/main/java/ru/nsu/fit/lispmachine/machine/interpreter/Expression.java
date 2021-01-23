@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface Expression {
     /**
-     * Transform an expression depending on execution context.
+     * Transform an expression depending on execution context
      * @param context execution context
      * @return new expression
      */
@@ -28,7 +28,7 @@ public interface Expression {
     }
 
     /**
-     * Cast the expression to a Java object.
+     * Cast the expression to a Java object
      * @param clazzName name of desired Java class
      * @return an object of the desired class
      */

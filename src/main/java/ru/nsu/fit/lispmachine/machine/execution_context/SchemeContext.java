@@ -17,7 +17,7 @@ import java.util.Map;
  * A class to hold Scheme execution context.
  * By default, supports the following symbols:
  * + - * / %
- * > < = not
+ * &lt; &gt; = not
  * list cons car cdr
  * null?
  */
@@ -26,14 +26,14 @@ public class SchemeContext implements ExecutionContext {
     private final boolean lazyModelSupported;
 
     /**
-     * Create a context that does not support lazy calculations.
+     * Create a context that does not support lazy calculations
      */
     public SchemeContext() {
         this(false);
     }
 
     /**
-     * @param lazy are the lazy calculations supported.
+     * @param lazy are the lazy calculations supported
      */
     public SchemeContext(boolean lazy) {
         lazyModelSupported = lazy;

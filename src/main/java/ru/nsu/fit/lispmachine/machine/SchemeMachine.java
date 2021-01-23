@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 /**
- * A class to represent Scheme interpreter.
+ * A class to represent Scheme interpreter
  */
 public class SchemeMachine {
     private final ExecutionContext context;
     private long lineNumber = 0;
 
     /**
-     * @param enableLaziness whether to enable lazy computations.
+     * @param enableLaziness whether to enable lazy computations
      */
     public SchemeMachine(boolean enableLaziness) {
         var exprs = new Parser(Tokenizer.tokenize(SchemeMachineUtils.getStdLibrary())).parse();
@@ -34,7 +34,7 @@ public class SchemeMachine {
 
     /**
      * Transform a single-line string into an
-     * expression of the Scheme Object model.
+     * expression of the Scheme Object model
      * @param line input string
      * @return
      */
@@ -48,7 +48,7 @@ public class SchemeMachine {
     }
 
     /**
-     * Interpret expressinons in an infinite loop.
+     * Interpret expressinons in an infinite loop
      */
     @SuppressWarnings("InfiniteLoopStatement")
     public void replMode() {
@@ -69,7 +69,7 @@ public class SchemeMachine {
     }
 
     /**
-     * Main method.
+     * Main method
      * @param args
      */
     public static void main(String[] args) {
