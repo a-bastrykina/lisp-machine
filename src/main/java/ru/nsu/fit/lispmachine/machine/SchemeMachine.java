@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class SchemeMachine {
-    private final ExecutionContext context = new SchemeContext();
+    private final ExecutionContext context;
     private long lineNumber = 0;
 
-    SchemeMachine() {
+    public SchemeMachine(boolean enableLaziness) {
         var exprs = new Parser(Tokenizer.tokenize(SchemeMachineUtils.getStdLibrary())).parse();
+        context = new SchemeContext(enableLaziness);
         for (Expression expr : exprs) {
             try {
                 expr.evaluate(context);
@@ -25,7 +26,7 @@ public class SchemeMachine {
         }
     }
 
-    Expression execLine(String line) {
+    public Expression execLine(String line) {
         if (line.strip().isEmpty())
             return null;
         lineNumber++;
@@ -35,14 +36,14 @@ public class SchemeMachine {
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
-    void replMode() {
+    public void replMode() {
         while (true) {
             try {
                 System.err.println("> ");
                 String st = SchemeMachineUtils.readString();
                 var res = execLine(st);
                 if (res != null)
-                    System.out.println(res);
+                    System.out.println(context.getActualExpressionValue(res));
             } catch (IOException ignored) {
             } catch (CompatibilityException exc) {
                 System.out.println("Exception " + exc.getRootCase() + " were raised: " + " ; line:" + lineNumber);
@@ -53,9 +54,13 @@ public class SchemeMachine {
     }
 
     public static void main(String[] args) {
-        var m = new SchemeMachine();
+        SchemeMachine m;
+        if (args.length < 1 || !args[0].equals("--lazy")) {
+            m = new SchemeMachine(false);
+        } else {
+            m = new SchemeMachine(true);
+        }
         m.replMode();
     }
-
 }
 

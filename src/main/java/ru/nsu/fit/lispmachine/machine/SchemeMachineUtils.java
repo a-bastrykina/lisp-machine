@@ -23,6 +23,12 @@ public class SchemeMachineUtils {
         return  "(define (display obj) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" obj))" +
                 "(define newline (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" \"\n\")))" +
                 "(define read-line (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"readString\")))" +
-                "(define (throw name message) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"raiseJavaException\" name message))";
+                "(define (throw name message) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"raiseJavaException\" name message))" +
+                "(define (abs x) (if (< x  0) (- x) x))" +
+                "(define (map proc items)" +
+                "  (if (null? items)" +
+                "      '()" +
+                "      (cons (proc (car items))" +
+                "            (map proc (cdr items)))))";
     }
 }

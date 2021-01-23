@@ -10,22 +10,24 @@ import java.util.stream.Collectors;
 
 public class Division extends NativeCall {
     @Override
-    public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
+    public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
 
-        if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
+        if (!args.stream().allMatch(a -> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("/ called with non numbers arguments");
         }
-        if (args.stream().anyMatch(a-> ((SchemeNumber) a).getValue() instanceof Double)) {
+        if (args.stream().anyMatch(a -> ((SchemeNumber) a).getValue() instanceof Double)) {
             var res = args.stream().
-                    map(a-> ((SchemeNumber) a).getValue()).
+                    map(a -> ((SchemeNumber) a).getValue()).
                     map(Number::doubleValue).
-                    reduce(1., (a,b)-> a / b);
+                    reduce(1., (a, b) -> a / b);
             return new SchemeNumber(res);
         } else {
-            int res = (int)args.get(0).castTo("java.lang.Int");
+            int res = (int) args.get(0).castTo("java.lang.Int");
             for (Expression arg : args.stream().skip(1).collect(Collectors.toList())) {
-                res/= (int)arg.castTo("java.lang.Int");
+                res /= (int) arg.castTo("java.lang.Int");
             }
             return new SchemeNumber(res);
         }

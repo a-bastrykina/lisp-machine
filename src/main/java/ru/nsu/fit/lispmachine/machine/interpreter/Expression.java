@@ -16,10 +16,6 @@ public interface Expression {
      */
     Expression evaluate(ExecutionContext context);
 
-    default boolean isTrue() {
-        return true;
-    }
-
     /**
      * Perform application computation
      * @param args application arguments
@@ -39,6 +35,8 @@ public interface Expression {
     default Object castTo(String clazzName) {
         if (clazzName.equals("java.lang.String"))
             return toString();
+        if (clazzName.equals("java.lang.Boolean"))
+            return true;
         throw new IllegalArgumentException("Cannot cast this to " + clazzName);
     }
 }

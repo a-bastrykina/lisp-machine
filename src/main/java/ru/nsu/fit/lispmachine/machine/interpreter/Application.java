@@ -2,6 +2,7 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -28,14 +29,28 @@ public class Application implements Expression {
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        var op = operator.evaluate(context);
+        if (!context.isLazyModelSupported()) {
+            var op = operator.evaluate(context);
+            return op.apply(arguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList()), context);
+        }
+        var op = context.getActualExpressionValue(operator);
         return op.apply(arguments, context);
     }
 
     @Override
     public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
-        var args = applyArguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-        Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
+        if (!context.isLazyModelSupported()) {
+            Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), applyArguments);
+            var newContext = (selfContext != null) ? extend.apply(selfContext) : extend.apply(context);
+            return this.operator.evaluate(newContext);
+        }
+        Function<ExecutionContext, ExecutionContext> extend = e -> {
+            var thunks = new ArrayList<Expression>();
+            for (Expression argument : applyArguments) {
+                thunks.add(new Thunk(argument, context));
+            }
+            return e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), thunks);
+        };
         var newContext = (selfContext != null) ? extend.apply(selfContext) : extend.apply(context);
         return this.operator.evaluate(newContext);
     }

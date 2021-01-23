@@ -13,15 +13,17 @@ import java.util.stream.Collectors;
 
 public class ConsCall extends NativeCall {
     @Override
-    public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
+    public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
         if (args.size() != 2) {
             throw new IllegalArgumentException("cons requires 2 arguments");
         }
         var tmp = new ArrayList<Expression>();
         if (args.get(1) instanceof SchemeList) {
             tmp.add(args.get(0));
-            tmp.addAll( ((SchemeList)args.get(1)).getValues());
+            tmp.addAll(((SchemeList) args.get(1)).getValues());
             return new SchemeList(tmp);
         }
         tmp.add(args.get(0));

@@ -11,16 +11,17 @@ import java.util.stream.Collectors;
 
 public class Equal extends NativeCall {
     @Override
-    public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
-
-        if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
+    public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
+        if (!args.stream().allMatch(a -> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("= called with non numbers arguments");
         }
-        var first = ((SchemeNumber)args.get(0)).getValue();
+        var first = ((SchemeNumber) args.get(0)).getValue();
         var res = true;
         for (Expression arg : args) {
-            var var = ((SchemeNumber)arg).getValue();
+            var var = ((SchemeNumber) arg).getValue();
             res = res && var.equals(first);
         }
         return new SchemeBool(res);
