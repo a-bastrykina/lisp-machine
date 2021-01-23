@@ -59,11 +59,18 @@ public class HomeMadeTests {
     }
 
     @Test
-    public void lazyExecutionTest() {
+    public void notLazyExecutionTest() {
         var prog = "(define (try a b) " +
                             "(if (= a 0) 1 b)) \n (try 0 (/ 1 0))";
-        var exception = assertThrows(IllegalArgumentException.class,
+        var exception = assertThrows(ArithmeticException.class,
                 () -> machine.simpleTestRun(prog, "1"));
-        assertEquals("Division by zero", exception.getMessage());
+        assertEquals("/ by zero", exception.getMessage());
+    }
+
+    @Test
+    public void lazyExecutionTest() {
+        var prog = "(define (try a b) " +
+                "(if (= a 0) 1 b)) \n (try 0 (/ 1 0))";
+        machine.simpleTestRun(prog, "1");
     }
 }
