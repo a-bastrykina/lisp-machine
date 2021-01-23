@@ -19,9 +19,8 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
-import ru.nsu.fit.lispmachine.machine.interpreter.TryExcept;
+import ru.nsu.fit.lispmachine.machine.interpreter.TryCatch;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
-import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
@@ -353,7 +352,7 @@ public class ParserTests {
 	public void testParseTryCatch() {
 		// (try-catch (/ 1 0) "java.lang.ArithmeticException" (println "Oops"))
 		var expected = List
-				.of(new TryExcept(
+				.of(new TryCatch(
 						new Application(new SchemeIdentifier("/"), List.of(new SchemeNumber(1), new SchemeNumber(0))),
 						Map.of(new SchemeString("java.lang.ArithmeticException"),
 								new Application(new SchemeIdentifier("println"),

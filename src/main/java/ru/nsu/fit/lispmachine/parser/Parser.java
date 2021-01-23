@@ -1,7 +1,6 @@
 package ru.nsu.fit.lispmachine.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +23,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
-import ru.nsu.fit.lispmachine.machine.interpreter.TryExcept;
+import ru.nsu.fit.lispmachine.machine.interpreter.TryCatch;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
@@ -343,7 +342,7 @@ public class Parser {
 			namesAndCatches.put(name, catchBody);
 		}
 
-		return new TryExcept(tryBody, namesAndCatches);
+		return new TryCatch(tryBody, namesAndCatches);
 	}
 
 	private Expression parseDecimalNumber() {

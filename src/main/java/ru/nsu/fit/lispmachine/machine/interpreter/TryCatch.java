@@ -2,16 +2,15 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class TryExcept implements Expression {
+public class TryCatch implements Expression {
 
 	private final Expression body;
 	private final Map<SchemeString, Expression> exceptionsAndCatches;
 
-	public TryExcept(Expression body, Map<SchemeString, Expression> exceptionsAndCatches) {
+	public TryCatch(Expression body, Map<SchemeString, Expression> exceptionsAndCatches) {
 		this.body = Objects.requireNonNull(body);
 		this.exceptionsAndCatches = Objects.requireNonNull(exceptionsAndCatches);
 	}
@@ -35,9 +34,9 @@ public class TryExcept implements Expression {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		TryExcept tryExcept = (TryExcept) o;
-		return body.equals(tryExcept.body) &&
-				exceptionsAndCatches.equals(tryExcept.exceptionsAndCatches);
+		TryCatch tryCatch = (TryCatch) o;
+		return body.equals(tryCatch.body) &&
+				exceptionsAndCatches.equals(tryCatch.exceptionsAndCatches);
 	}
 
 	@Override public int hashCode() {
