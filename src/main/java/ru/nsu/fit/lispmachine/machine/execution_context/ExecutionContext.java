@@ -13,4 +13,7 @@ public interface ExecutionContext {
 
     void setValue(String name, Expression value);
 
+    Expression getActualExpressionValue(Expression expression);
+
+    boolean isLazyModelSupported();
 }

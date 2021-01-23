@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 
 public class CdrCall extends NativeCall {
     @Override
-    public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
+    public Expression apply(List<Expression> args, ExecutionContext context) {
         if (args.size() != 1) {
             throw new IllegalArgumentException("cdr requires 1 argument");
         }
@@ -21,7 +20,7 @@ public class CdrCall extends NativeCall {
             throw new IllegalArgumentException("cdr requires list as argument");
         }
         if (args.get(0) instanceof DottedSchemeList) {
-            return ((DottedSchemeList)args.get(0)).getValues().get(1);
+            return ((DottedSchemeList) args.get(0)).getValues().get(1);
         }
         var tmp = new ArrayList<>(((SchemeList) args.get(0)).getValues());
         if (tmp.size() == 0) {

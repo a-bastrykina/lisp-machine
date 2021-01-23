@@ -25,14 +25,17 @@ public class Application implements Expression {
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        var op = operator.evaluate(context);
+        if (!context.isLazyModelSupported()) {
+            var op = operator.evaluate(context);
+            return op.apply(arguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList()), context);
+        }
+        var op = context.getActualExpressionValue(operator);
         return op.apply(arguments, context);
     }
 
     @Override
     public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
-        var args = applyArguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-        Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), args);
+        Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), applyArguments);
         var newContext = (selfContext != null) ? extend.apply(selfContext) : extend.apply(context);
         return this.operator.evaluate(newContext);
     }
