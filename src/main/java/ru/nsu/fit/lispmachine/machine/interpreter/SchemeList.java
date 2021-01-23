@@ -19,8 +19,12 @@ public class SchemeList implements Expression {
 	}
 
 	@Override
-	public boolean isTrue() {
-		return !values.isEmpty();
+	public Object castTo(String clazzName) {
+        if (clazzName.equals("java.lang.String"))
+            return toString();
+        if (clazzName.equals("java.lang.Boolean"))
+            return !values.isEmpty();
+        throw new IllegalArgumentException("Cannot cast this to " + clazzName);
 	}
 
 	@Override

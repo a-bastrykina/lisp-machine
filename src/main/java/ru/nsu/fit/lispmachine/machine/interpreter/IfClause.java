@@ -19,8 +19,8 @@ public class IfClause implements Expression {
     @Override
     public Expression evaluate(ExecutionContext context) {
         if (!context.isLazyModelSupported())
-            return pred.evaluate(context).isTrue() ? trueBody.evaluate(context) : falseBody.evaluate(context);
-        return context.getActualExpressionValue(pred).isTrue() ? trueBody.evaluate(context) : falseBody.evaluate(context);
+            return (boolean) pred.evaluate(context).castTo("java.lang.Boolean") ? trueBody.evaluate(context) : falseBody.evaluate(context);
+        return ((boolean) context.getActualExpressionValue(pred).castTo("java.lang.Boolean")) ? trueBody.evaluate(context) : falseBody.evaluate(context);
     }
 
     @Override

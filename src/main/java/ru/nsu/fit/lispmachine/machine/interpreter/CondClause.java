@@ -24,7 +24,7 @@ public class CondClause implements Expression {
         for (Expression clause : clauses) {
             var predicate = new Application(carName, List.of(clause)).evaluate(context);
             var predRes = predicate.evaluate(context);
-            if (predicate.evaluate(context).isTrue()) {
+            if ((boolean)predicate.evaluate(context).castTo("java.lang.Boolean")) {
                 var body = (SchemeList) new Application(cdrName, List.of(clause)).evaluate(context);
                 Expression res = new SchemeBool(true);
                 for (Expression value : body.getValues()) {

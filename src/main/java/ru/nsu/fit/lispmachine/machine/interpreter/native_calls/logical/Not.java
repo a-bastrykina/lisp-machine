@@ -18,6 +18,6 @@ public class Not extends NativeCall {
         if (args.size() != 1) {
             throw new IllegalArgumentException("not required only 1 argument");
         }
-        return new SchemeBool(!args.get(0).isTrue());
+        return new SchemeBool(!(boolean) args.get(0).castTo("java.lang.Boolean"));
     }
 }
