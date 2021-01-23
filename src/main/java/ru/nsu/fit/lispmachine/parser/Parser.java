@@ -1,10 +1,10 @@
 package ru.nsu.fit.lispmachine.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -23,6 +23,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
+import ru.nsu.fit.lispmachine.machine.interpreter.TryCatch;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
@@ -48,6 +49,7 @@ public class Parser {
 		definedForms.put(SchemeKeywords.SET_KEYWORD, this::parseAssignment);
 		definedForms.put(SchemeKeywords.BEGIN_KEYWORD, this::parseBegin);
 		definedForms.put(SchemeKeywords.JAVA_CALL_KEYWORD, this::parseJavaMethodCall);
+		definedForms.put(SchemeKeywords.TRY_CATCH_KEYWORD, this::parseTryCatch);
 	}
 
 	public List<Expression> parse() {
@@ -71,6 +73,7 @@ public class Parser {
 		try {
 			switch (currentToken.getType()) {
 				case EOF:
+				case CLOSE_BRACE:
 					return null;
 				case OPEN_BRACE:
 					return parseAfterOpenBrace();
@@ -100,7 +103,7 @@ public class Parser {
 		}
 	}
 
-	private List<Expression> retrieveExpressionsList() {
+	private List<Expression> parseExpressionsList() {
 		List<Expression> result = new ArrayList<>();
 		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
 			var currentExpr = parseNext();
@@ -114,15 +117,7 @@ public class Parser {
 
 	private Expression parseApplication() {
 		Expression operator = parseNext();
-		List<Expression> operands = new ArrayList<>();
-		Expression current;
-		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-			current = parseNext();
-			if (current == null) {
-				throw new ParseException("Expecting closing brace, but EOF reached");
-			}
-			operands.add(current);
-		}
+		List<Expression> operands = parseExpressionsList();
 		return new Application(operator, operands);
 	}
 
@@ -160,9 +155,9 @@ public class Parser {
 			}
 
 			SchemeIdentifier definitionName = (SchemeIdentifier) parseNext();
-			var params = retrieveExpressionsList();
+			var params = parseExpressionsList();
 			proceedToken();
-			var expressions = retrieveExpressionsList();
+			var expressions = parseExpressionsList();
 			return new Define(definitionName, params, expressions);
 		}
 	}
@@ -173,26 +168,17 @@ public class Parser {
 		if (currentToken.getType() != TokenType.OPEN_BRACE) {
 			throw new ParseException("Expecting open brace to parse lambda's arguments");
 		}
-		proceedToken();
 
-		List<Expression> args = new ArrayList<>();
-		Expression currentExpr;
-		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-			currentExpr = parseNext();
-			if (currentExpr == null) {
-				throw new ParseException("Expecting closing brace, but EOF reached");
-			}
-			args.add(currentExpr);
-		}
 		proceedToken();
-
-		currentExpr = parseNext();
+		List<Expression> args = parseExpressionsList();
+		proceedToken();
+		Expression body = parseNext();
 
 		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
 			throw new ParseException("Expecting closing brace at the end of lambda");
 		}
 
-		return new Lambda(args, currentExpr);
+		return new Lambda(args, body);
 	}
 
 	private Expression parseIf() {
@@ -215,15 +201,7 @@ public class Parser {
 
 		if (currentToken.getType() == TokenType.OPEN_BRACE) {
 			proceedToken();
-			List<Expression> args = new ArrayList<>();
-			Expression currentExpr;
-			while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-				currentExpr = parseNext();
-				if (currentExpr == null) {
-					throw new ParseException("Expecting closing brace, but EOF reached");
-				}
-				args.add(currentExpr);
-			}
+			List<Expression> args = parseExpressionsList();
 			return new QuotedExpr(new SchemeList(args));
 		} else {
 			Expression nestedExpr = parseAtom();
@@ -234,33 +212,6 @@ public class Parser {
 				}
 			}
 			return new QuotedExpr(nestedExpr);
-		}
-
-
-	}
-
-	private Expression parseAtom() {
-		switch (currentToken.getType()) {
-			case BOOLEAN_VALUE:
-				return parseBoolean();
-			case CHARACTER_VALUE:
-				return parseChar();
-			case STRING_VALUE:
-				return parseString();
-			case NUM2_VALUE:
-				return parseBinaryNumber();
-			case NUM8_VALUE:
-				return parseOctetNumber();
-			case NUM10_VALUE:
-				return parseDecimalNumber();
-			case NUM16_VALUE:
-				return parseHexNumber();
-			case REAL_VALUE:
-				return parseRealNumber();
-			case IDENTIFIER:
-				return new SchemeIdentifier(currentToken.getData());
-			default:
-				throw new ParseException("Couldn parse atom for the token " + currentToken.getType());
 		}
 	}
 
@@ -283,15 +234,7 @@ public class Parser {
 
 	private Expression parseBegin() {
 		proceedToken();
-		List<Expression> operands = new ArrayList<>();
-		Expression current;
-		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-			current = parseNext();
-			if (current == null) {
-				throw new ParseException("Expecting closing brace, but EOF reached");
-			}
-			operands.add(current);
-		}
+		List<Expression> operands = parseExpressionsList();
 		return new Begin(operands);
 	}
 
@@ -307,18 +250,30 @@ public class Parser {
 		}
 
 		SchemeString methodName = (SchemeString) parseNext();
-
-		List<Expression> args = new ArrayList<>();
-		Expression current;
-		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-			current = parseNext();
-			if (current == null) {
-				throw new ParseException("Expecting closing brace, but EOF reached");
-			}
-			args.add(current);
-		}
+		List<Expression> args = parseExpressionsList();
 
 		return new JavaMethodCall(className, methodName, args);
+	}
+
+	private Expression parseTryCatch() {
+		proceedToken();
+
+		Expression tryBody = parseNext();
+		Map<SchemeString, Expression> namesAndCatches = new HashMap<>();
+
+		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			if (currentToken.getType() != TokenType.STRING_VALUE) {
+				throw new ParseException("Expecting string value to parse try-catch clause");
+			}
+			var name = (SchemeString) parseNext();
+			var catchBody = parseNext();
+			if (catchBody == null) {
+				throw new ParseException("Unexpected end of try-catch clause");
+			}
+			namesAndCatches.put(name, catchBody);
+		}
+
+		return new TryCatch(tryBody, namesAndCatches);
 	}
 
 	private Expression parseDecimalNumber() {
@@ -367,6 +322,31 @@ public class Parser {
 	private Expression parseString() {
 		String unwrapped = currentToken.getData().substring(1, currentToken.getData().length() - 1);
 		return new SchemeString(unwrapped);
+	}
+
+	private Expression parseAtom() {
+		switch (currentToken.getType()) {
+			case BOOLEAN_VALUE:
+				return parseBoolean();
+			case CHARACTER_VALUE:
+				return parseChar();
+			case STRING_VALUE:
+				return parseString();
+			case NUM2_VALUE:
+				return parseBinaryNumber();
+			case NUM8_VALUE:
+				return parseOctetNumber();
+			case NUM10_VALUE:
+				return parseDecimalNumber();
+			case NUM16_VALUE:
+				return parseHexNumber();
+			case REAL_VALUE:
+				return parseRealNumber();
+			case IDENTIFIER:
+				return new SchemeIdentifier(currentToken.getData());
+			default:
+				throw new ParseException("Couldn parse atom for the token " + currentToken.getType());
+		}
 	}
 
 }

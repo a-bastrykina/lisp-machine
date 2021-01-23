@@ -2,6 +2,7 @@ package ru.nsu.fit.lispmachine.parser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import ru.nsu.fit.lispmachine.exceptions.ParseException;
@@ -18,8 +19,8 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
+import ru.nsu.fit.lispmachine.machine.interpreter.TryCatch;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
-import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
@@ -343,6 +344,27 @@ public class ParserTests {
 						new Token(TokenType.CLOSE_BRACE),
 						new Token(TokenType.EOF))
 						.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseTryCatch() {
+		// (try-catch (/ 1 0) "java.lang.ArithmeticException" (println "Oops"))
+		var expected = List
+				.of(new TryCatch(
+						new Application(new SchemeIdentifier("/"), List.of(new SchemeNumber(1), new SchemeNumber(0))),
+						Map.of(new SchemeString("java.lang.ArithmeticException"),
+								new Application(new SchemeIdentifier("println"),
+										Collections.singletonList(new SchemeString("Oops"))))));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "try-catch"),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "/"),
+				new Token(TokenType.NUM10_VALUE, "1"), new Token(TokenType.NUM10_VALUE, "0"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.STRING_VALUE, "\"java.lang.ArithmeticException\""),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "println"),
+				new Token(TokenType.STRING_VALUE, "\"Oops\""), new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
 		var actual = parser.parse();
 		assertEquals(expected, actual);
 	}

@@ -8,4 +8,5 @@ public class SchemeKeywords {
 	public static final String SET_KEYWORD = "set!";
 	public static final String BEGIN_KEYWORD = "begin";
 	public static final String JAVA_CALL_KEYWORD = "java-call";
+	public static final String TRY_CATCH_KEYWORD = "try-catch";
 }
