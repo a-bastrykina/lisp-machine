@@ -96,7 +96,6 @@ public class Tokenizer {
 				String data = dataBuilder.toString();
 				return new Token(TokenType.recognizeType(data), data);
 			} catch (IOException e) {
-				throw new RuntimeException(e);
 				throw new TokenizeException(e);
 			}
 		}
