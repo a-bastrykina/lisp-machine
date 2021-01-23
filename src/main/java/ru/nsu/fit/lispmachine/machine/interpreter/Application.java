@@ -2,6 +2,7 @@ package ru.nsu.fit.lispmachine.machine.interpreter;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -35,7 +36,18 @@ public class Application implements Expression {
 
     @Override
     public Expression apply(List<Expression> applyArguments, ExecutionContext context) {
-        Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), applyArguments);
+        if (!context.isLazyModelSupported()) {
+            Function<ExecutionContext, ExecutionContext> extend = e -> e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), applyArguments);
+            var newContext = (selfContext != null) ? extend.apply(selfContext) : extend.apply(context);
+            return this.operator.evaluate(newContext);
+        }
+        Function<ExecutionContext, ExecutionContext> extend = e -> {
+            var thunks = new ArrayList<Expression>();
+            for (Expression argument : applyArguments) {
+                thunks.add(new Thunk(argument, context));
+            }
+            return e.extendContext(arguments.stream().map(Objects::toString).collect(Collectors.toList()), thunks);
+        };
         var newContext = (selfContext != null) ? extend.apply(selfContext) : extend.apply(context);
         return this.operator.evaluate(newContext);
     }
