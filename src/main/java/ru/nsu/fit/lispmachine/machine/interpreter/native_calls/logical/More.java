@@ -19,7 +19,7 @@ public class More extends NativeCall {
         }
         var first = ((SchemeNumber)args.get(0)).getValue();
         var res = true;
-        for (Expression arg : args) {
+        for (Expression arg : args.stream().skip(1).collect(Collectors.toList())) {
             var var = ((SchemeNumber)arg).getValue();
             res = res && first.doubleValue() > var.doubleValue();
         }
