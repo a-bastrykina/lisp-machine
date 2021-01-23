@@ -7,10 +7,8 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class JavaMethodCall extends NativeCall {
@@ -18,11 +16,14 @@ public class JavaMethodCall extends NativeCall {
     private final SchemeString className;
     private final SchemeString methodName;
     private final List<Expression> schemeParameters;
+    private final HashMap<String, Function<Object, Expression>> typeMap = new HashMap<>();
 
     public JavaMethodCall(SchemeString className, SchemeString methodName, List<Expression> schemeParameters) {
         this.className = className;
         this.methodName = methodName;
         this.schemeParameters = schemeParameters;
+
+        typeMap.put("double", e -> new SchemeNumber((Number) e));
     }
 
     @Override
@@ -50,20 +51,15 @@ public class JavaMethodCall extends NativeCall {
                 casted.add(value);
             }
 
-            var returned_value = method.invoke(null, casted.toArray());
-            var return_value_type = method.getReturnType().toString();
-            //todo more types
-            if (return_value_type.equals("double")) {
-                return new SchemeNumber((Number) returned_value);
-            }
-            return new SchemeString(returned_value == null? "'()" : returned_value.toString() );
+            var returnedValue = method.invoke(null, casted.toArray());
+            var returnValueType = method.getReturnType().toString();
+            return typeMap.getOrDefault(returnValueType, e -> new SchemeString(e == null ? "'()" : e.toString())).apply(returnedValue);
 
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("Unknown class " + className);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        }
-        catch (InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             throw new CompatibilityException(e.getCause());
         }
         return null;
