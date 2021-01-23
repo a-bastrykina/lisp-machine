@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 public class SchemeMachine {
-    private final ExecutionContext context = new SchemeContext();
+    private final ExecutionContext context;
     private long lineNumber = 0;
 
-    SchemeMachine() {
+    SchemeMachine(boolean enableLaziness) {
         var exprs = new Parser(Tokenizer.tokenize(SchemeMachineUtils.getStdLibrary())).parse();
+        context = new SchemeContext(enableLaziness);
         for (Expression expr : exprs) {
             try {
                 expr.evaluate(context);
@@ -53,9 +54,13 @@ public class SchemeMachine {
     }
 
     public static void main(String[] args) {
-        var m = new SchemeMachine();
+        SchemeMachine m;
+        if (args.length < 1 || !args[0].equals("--lazy")) {
+            m = new SchemeMachine(false);
+        } else {
+            m = new SchemeMachine(true);
+        }
         m.replMode();
     }
-
 }
 
