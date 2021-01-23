@@ -8,7 +8,6 @@ import java.util.Objects;
 
 public class CondClause implements Expression {
 
-
     private final List<Expression> clauses;
     private final Expression elseClause;
 

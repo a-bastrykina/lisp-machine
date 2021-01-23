@@ -28,6 +28,10 @@ import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
+/**
+ * Parser class. Using this class, you can transform
+ * stream of tokens into Abstract Syntax Tree.
+ */
 public class Parser {
 
 	private final HashMap<String, Supplier<Expression>> definedForms = new HashMap<>();
@@ -35,6 +39,10 @@ public class Parser {
 	private final Iterator<Token> tokens;
 	Token currentToken;
 
+	/**
+	 * Creates parser.
+	 * @param tokens token iterator.
+	 */
 	public Parser(Iterator<Token> tokens) {
 		this.tokens = Objects.requireNonNull(tokens);
 		currentToken = tokens.next();
@@ -52,6 +60,10 @@ public class Parser {
 		definedForms.put(SchemeKeywords.TRY_CATCH_KEYWORD, this::parseTryCatch);
 	}
 
+	/**
+	 * Parse input tokens.
+	 * @return list of expressions.
+	 */
 	public List<Expression> parse() {
 		List<Expression> result = new ArrayList<>();
 		Expression current;

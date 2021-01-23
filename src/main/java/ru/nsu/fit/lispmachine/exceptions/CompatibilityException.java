@@ -4,7 +4,6 @@ public class CompatibilityException extends RuntimeException {
     private final Throwable rootCase;
 
     public CompatibilityException(Throwable rootCase) {
-
         this.rootCase = rootCase;
     }
 

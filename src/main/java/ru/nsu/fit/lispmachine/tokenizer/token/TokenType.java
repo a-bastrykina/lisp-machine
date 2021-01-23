@@ -13,6 +13,9 @@ import ru.nsu.fit.lispmachine.tokenizer.rules.WordTokenRule;
 
 import static ru.nsu.fit.lispmachine.tokenizer.token.TokenRegex.*;
 
+/**
+ * Token type enum.
+ */
 public enum TokenType {
 	EOF(EofRule.INSTANCE),
 
@@ -40,7 +43,7 @@ public enum TokenType {
 		this.rule = rule;
 	}
 
-	public ITokenRule getRule() {
+	ITokenRule getRule() {
 		return this.rule;
 	}
 
@@ -52,6 +55,13 @@ public enum TokenType {
 		return charBasedRuleTypes;
 	}
 
+	/**
+	 * Try to recognize token type which
+	 * corresponds to the input string.
+	 * @param input input string
+	 * @return token type
+	 * @throws IllegalArgumentException thrown when type cannot be recognized
+	 */
 	public static TokenType recognizeType(String input) {
 		for (var type : TokenType.values()) {
 			if (type.rule.matches(input)) {
@@ -61,7 +71,14 @@ public enum TokenType {
 		throw new IllegalArgumentException(String.format("Token type for input '%s' is not recognized", input));
 	}
 
-	public static TokenType matchCharacter(int ch) {
+	/**
+	 * Try to recognize token type which
+	 * corresponds to the input character.
+	 * @param ch input char
+	 * @return token type
+	 * @throws IllegalArgumentException thrown when type cannot be recognized
+	 */
+	public static TokenType recognizeType(int ch) {
 		String input = Character.toString(ch);
 		for (var type : TokenType.getCharacterBasedRuleTypes()) {
 			if (type.getRule().matches(input))

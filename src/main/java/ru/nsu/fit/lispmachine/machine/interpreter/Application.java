@@ -7,6 +7,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A class to represent application of the Scheme language.
+ */
 public class Application implements Expression {
     protected List<Expression> arguments;
     private final Expression operator;
