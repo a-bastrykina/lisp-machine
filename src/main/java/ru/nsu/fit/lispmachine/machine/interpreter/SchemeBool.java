@@ -8,7 +8,7 @@ public class SchemeBool implements Expression {
 	private final boolean value;
 
 	public SchemeBool(boolean value) {
-		this.value = Objects.requireNonNull(value);
+		this.value = value;
 	}
 
 	@Override
@@ -21,8 +21,12 @@ public class SchemeBool implements Expression {
 	}
 
 	@Override
-	public boolean isTrue() {
-		return value;
+	public Object castTo(String clazzName) {
+        if (clazzName.equals("java.lang.String"))
+            return toString();
+        if (clazzName.equals("java.lang.Boolean"))
+            return value;
+        throw new IllegalArgumentException("Cannot cast this to " + clazzName);
 	}
 
 	@Override

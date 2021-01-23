@@ -18,7 +18,7 @@ public class CheckEmptyListCall extends NativeCall {
         if (args.size() != 1) {
             throw new IllegalArgumentException("null? requires only one argument");
         }
-        var check = args.get(0) instanceof SchemeList && !args.get(0).isTrue();
+        var check = args.get(0) instanceof SchemeList && !(boolean)args.get(0).castTo("java.lang.Boolean");
         return new SchemeBool(check);
     }
 }
