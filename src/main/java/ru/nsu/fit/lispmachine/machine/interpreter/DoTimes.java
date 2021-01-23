@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class DoTimes implements Expression {
-
-
     private final SchemeIdentifier variable;
     private final SchemeNumber upperLimit;
     private final Expression body;
