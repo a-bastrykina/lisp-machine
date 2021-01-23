@@ -65,9 +65,14 @@ public class TokenTypeTests {
 	@Test
 	public void testRecognizeReal() {
 		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("11e-10"));
+		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("-11e-10"));
 		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType(".11e+10"));
+		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("+.11e+10"));
 		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType(".11"));
+		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("-.11"));
 		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("11.110e+21"));
+		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("+11.110e+21"));
 		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("11.110"));
+		assertEquals(TokenType.REAL_VALUE, TokenType.recognizeType("-11.110"));
 	}
 }
