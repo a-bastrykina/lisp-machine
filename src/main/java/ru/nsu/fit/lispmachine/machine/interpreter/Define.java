@@ -12,6 +12,12 @@ public class Define implements Expression {
 	private final List<Expression> parameters;
 	private final List<Expression> body;
 
+	/**
+	 * @param name definition name
+	 * @param parameters definition parameters
+	 * @param body list of definition body expressions
+	 * @throws NullPointerException if arguments are null
+	 */
 	public Define(SchemeIdentifier name, List<Expression> parameters, List<Expression> body) {
 		this.name = Objects.requireNonNull(name);
 		this.parameters = Objects.requireNonNull(parameters);

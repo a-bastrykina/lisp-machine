@@ -7,6 +7,10 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 public class SchemeChar implements Expression {
 	Character value;
 
+	/**
+	 * @param value
+	 * @throws NullPointerException if an argument is null
+	 */
 	public SchemeChar(Character value) {
 		this.value = Objects.requireNonNull(value);
 	}
@@ -15,6 +19,9 @@ public class SchemeChar implements Expression {
 		return this;
 	}
 
+	/**
+	 * @return character value
+	 */
 	public Character getValue() {
 		return value;
 	}

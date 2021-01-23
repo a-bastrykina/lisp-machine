@@ -13,14 +13,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A class to hold Scheme execution context.
+ * By default, supports the following symbols:
+ * + - * / %
+ * > < = not
+ * list cons car cdr
+ * null?
+ */
 public class SchemeContext implements ExecutionContext {
     private final Map<String, Expression> bindings = new HashMap<>();
     private final boolean lazyModelSupported;
 
+    /**
+     * Create a context that does not support lazy calculations.
+     */
     public SchemeContext() {
         this(false);
     }
 
+    /**
+     * @param lazy are the lazy calculations supported.
+     */
     public SchemeContext(boolean lazy) {
         lazyModelSupported = lazy;
         bindings.put("+", new Plus());

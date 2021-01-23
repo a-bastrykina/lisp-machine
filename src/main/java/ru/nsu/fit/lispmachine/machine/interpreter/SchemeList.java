@@ -10,10 +10,17 @@ import java.util.stream.Collectors;
 public class SchemeList implements Expression {
 	private final List<Expression> values;
 
+	/**
+	 * @param values
+	 * @throws NullPointerException if an argument is null
+	 */
 	public SchemeList(List<Expression> values) {
 	    this.values = Objects.requireNonNull(values);
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Expression> getValues() {
 		return values;
 	}

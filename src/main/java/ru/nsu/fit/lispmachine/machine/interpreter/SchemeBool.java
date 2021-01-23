@@ -7,6 +7,9 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 public class SchemeBool implements Expression {
 	private final boolean value;
 
+	/**
+	 * @param value
+	 */
 	public SchemeBool(boolean value) {
 		this.value = value;
 	}
@@ -16,6 +19,9 @@ public class SchemeBool implements Expression {
 		return this;
 	}
 
+	/**
+	 * @return boolean value
+	 */
 	public boolean getValue() {
 		return value;
 	}

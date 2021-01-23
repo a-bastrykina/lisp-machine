@@ -10,10 +10,16 @@ import ru.nsu.fit.lispmachine.tokenizer.Tokenizer;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+/**
+ * A class to represent Scheme interpreter.
+ */
 public class SchemeMachine {
     private final ExecutionContext context;
     private long lineNumber = 0;
 
+    /**
+     * @param enableLaziness whether to enable lazy computations.
+     */
     public SchemeMachine(boolean enableLaziness) {
         var exprs = new Parser(Tokenizer.tokenize(SchemeMachineUtils.getStdLibrary())).parse();
         context = new SchemeContext(enableLaziness);
@@ -26,6 +32,12 @@ public class SchemeMachine {
         }
     }
 
+    /**
+     * Transform a single-line string into an
+     * expression of the Scheme Object model.
+     * @param line input string
+     * @return
+     */
     public Expression execLine(String line) {
         if (line.strip().isEmpty())
             return null;
@@ -35,6 +47,9 @@ public class SchemeMachine {
         return exprs.get(exprs.size() - 1);
     }
 
+    /**
+     * Interpret expressinons in an infinite loop.
+     */
     @SuppressWarnings("InfiniteLoopStatement")
     public void replMode() {
         while (true) {
@@ -53,6 +68,10 @@ public class SchemeMachine {
         }
     }
 
+    /**
+     * Main method.
+     * @param args
+     */
     public static void main(String[] args) {
         SchemeMachine m;
         if (args.length < 1 || !args[0].equals("--lazy")) {

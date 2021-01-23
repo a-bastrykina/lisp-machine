@@ -16,6 +16,11 @@ public class Application implements Expression {
     private final Expression operator;
     private ExecutionContext selfContext;
 
+    /**
+     * @param operator
+     * @param arguments
+     * @throws NullPointerException if arguments are null
+     */
     public Application(Expression operator, List<Expression> arguments) {
         this.operator = Objects.requireNonNull(operator);
         this.arguments = Objects.requireNonNull(arguments);

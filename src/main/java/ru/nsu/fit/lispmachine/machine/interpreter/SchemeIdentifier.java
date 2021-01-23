@@ -7,6 +7,10 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 public class SchemeIdentifier implements Expression {
 	private final String value;
 
+	/**
+	 * @param value
+	 * @throws NullPointerException if an argument is null
+	 */
 	public SchemeIdentifier(String value) {
 		this.value = Objects.requireNonNull(value);
 	}
@@ -21,6 +25,9 @@ public class SchemeIdentifier implements Expression {
 		return value;
 	}
 
+	/**
+	 * @return identifier name
+	 */
 	public String getValue() {
 		return value;
 	}

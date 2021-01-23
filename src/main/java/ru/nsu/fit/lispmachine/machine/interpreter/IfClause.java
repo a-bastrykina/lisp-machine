@@ -10,6 +10,12 @@ public class IfClause implements Expression {
     private final Expression trueBody;
     private final Expression falseBody;
 
+    /**
+     * @param pred condition
+     * @param trueBody if clause
+     * @param falseBody else clause
+     * @throws NullPointerException if arguments are null
+     */
     public IfClause(Expression pred, Expression trueBody, Expression falseBody) {
         this.pred = Objects.requireNonNull(pred);
         this.trueBody = Objects.requireNonNull(trueBody);
