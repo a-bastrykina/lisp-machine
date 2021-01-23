@@ -1,7 +1,6 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
-import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.*;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.*;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Equal;
@@ -65,19 +64,8 @@ public class SchemeContext implements ExecutionContext {
     }
 
     @Override
-    public void setValue(String name, Expression value) {
-        if (!bindings.containsKey(name)) {
-            throw new IllegalArgumentException("Unknown binding " + name);
-        }
-        bindings.put(name, value);
-    }
-
-    @Override
     public Expression getActualExpressionValue(Expression expression) {
-
-//        return  (!lazyEvalSupported) ? expression : forceExpression(expression)
-//        if (lazyEvalSupported)
-        return null;
+        return (!lazyModelSupported) ? expression : forceExpression(expression);
     }
 
     private Expression forceExpression(Expression expression) {

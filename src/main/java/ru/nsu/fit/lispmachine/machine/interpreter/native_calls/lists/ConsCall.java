@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 public class ConsCall extends NativeCall {
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
         if (args.size() != 2) {
             throw new IllegalArgumentException("cons requires 2 arguments");
         }

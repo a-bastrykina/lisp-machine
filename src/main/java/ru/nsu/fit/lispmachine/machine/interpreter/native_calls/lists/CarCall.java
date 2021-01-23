@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 public class CarCall extends NativeCall {
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
         if (args.size() != 1) {
             throw new IllegalArgumentException("car requires 1 argument");
         }

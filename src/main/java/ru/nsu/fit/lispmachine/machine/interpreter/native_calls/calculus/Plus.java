@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 public class Plus extends NativeCall {
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
         if (!args.stream().allMatch(a -> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("+ called with non numbers arguments");
         }
