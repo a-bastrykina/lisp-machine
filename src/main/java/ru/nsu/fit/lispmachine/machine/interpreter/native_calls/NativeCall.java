@@ -7,6 +7,6 @@ public abstract class NativeCall implements Expression {
 
     @Override
     public Expression evaluate(ExecutionContext context) {
-        throw new IllegalArgumentException("evaluate in native call!");
+        return this;
     }
 }

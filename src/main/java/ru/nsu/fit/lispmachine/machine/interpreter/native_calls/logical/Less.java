@@ -11,15 +11,14 @@ import java.util.stream.Collectors;
 
 public class Less extends NativeCall {
     @Override
-    public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e-> e.evaluate(context)).collect(Collectors.toList());
-        if (! args.stream().allMatch(a-> a instanceof SchemeNumber)) {
+    public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (!args.stream().allMatch(a -> a instanceof SchemeNumber)) {
             throw new IllegalArgumentException("< called with non numbers arguments");
         }
-        var first = ((SchemeNumber)args.get(0)).getValue();
+        var first = ((SchemeNumber) args.get(0)).getValue();
         var res = true;
         for (Expression arg : args.stream().skip(1).collect(Collectors.toList())) {
-            var var = ((SchemeNumber)arg).getValue();
+            var var = ((SchemeNumber) arg).getValue();
             res = res && first.doubleValue() < var.doubleValue();
         }
         return new SchemeBool(res);

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public class SchemeListCall extends NativeCall {
     @Override
     public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-        return new SchemeList(args);
+        return new SchemeList(arguments);
     }
 }

@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 
 public class CheckEmptyListCall extends NativeCall {
     @Override
-    public Expression apply(List<Expression> arguments, ExecutionContext context) {
-        var args = arguments.stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
+    public Expression apply(List<Expression> args, ExecutionContext context) {
         if (args.size() != 1) {
             throw new IllegalArgumentException("null? requires only one argument");
         }

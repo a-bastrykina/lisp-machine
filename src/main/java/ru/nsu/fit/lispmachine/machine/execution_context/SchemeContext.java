@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class SchemeContext implements ExecutionContext {
     private final Map<String, Expression> bindings = new HashMap<>();
+    private boolean lazyModelSupported = false;
 
     public SchemeContext() {
         bindings.put("+", new Plus());
@@ -72,7 +73,24 @@ public class SchemeContext implements ExecutionContext {
     }
 
     @Override
+    public Expression getActualExpressionValue(Expression expression) {
+
+//        return  (!lazyEvalSupported) ? expression : forceExpression(expression)
+//        if (lazyEvalSupported)
+        return null;
+    }
+
+    private Expression forceExpression(Expression expression) {
+        return expression;
+    }
+
+    @Override
     public String toString() {
         return bindings.toString();
+    }
+
+    @Override
+    public boolean isLazyModelSupported() {
+        return lazyModelSupported;
     }
 }
