@@ -2,10 +2,7 @@ package ru.nsu.fit.lispmachine.machine.execution_context;
 
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Division;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Minus;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Multiply;
-import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.Plus;
+import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.*;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.*;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Equal;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.logical.Less;
@@ -23,6 +20,7 @@ public class SchemeContext implements ExecutionContext {
         bindings.put("+", new Plus());
         bindings.put("-", new Minus());
         bindings.put("*", new Multiply());
+        bindings.put("%", new Mod());
         bindings.put("/", new Division());
 
         bindings.put(">", new More());
