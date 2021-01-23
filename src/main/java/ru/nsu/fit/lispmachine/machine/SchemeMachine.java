@@ -42,7 +42,7 @@ public class SchemeMachine {
                 String st = SchemeMachineUtils.readString();
                 var res = execLine(st);
                 if (res != null)
-                    System.out.println(res);
+                    System.out.println(context.getActualExpressionValue(res));
             } catch (IOException ignored) {
             } catch (CompatibilityException exc) {
                 System.out.println("Exception " + exc.getRootCase() + " were raised: " + " ; line:" + lineNumber);

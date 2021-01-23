@@ -1,5 +1,6 @@
 package ru.nsu.fit.lispmachine.machine.execution_context;
 
+import ru.nsu.fit.lispmachine.machine.interpreter.Thunk;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.calculus.*;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists.*;
@@ -14,9 +15,14 @@ import java.util.Map;
 
 public class SchemeContext implements ExecutionContext {
     private final Map<String, Expression> bindings = new HashMap<>();
-    private boolean lazyModelSupported = false;
+    private final boolean lazyModelSupported;
 
     public SchemeContext() {
+        this(false);
+    }
+
+    public SchemeContext(boolean lazy) {
+        lazyModelSupported = lazy;
         bindings.put("+", new Plus());
         bindings.put("-", new Minus());
         bindings.put("*", new Multiply());
@@ -50,7 +56,7 @@ public class SchemeContext implements ExecutionContext {
             throw new IllegalArgumentException("Variables count doesn't match values count");
         }
 
-        var res = new SchemeContext();
+        var res = new SchemeContext(lazyModelSupported);
         res.bindings.putAll(bindings);
         for (int i = 0; i < values.size(); i++) {
             res.addDefinition(variables.get(i), values.get(i));
@@ -65,10 +71,12 @@ public class SchemeContext implements ExecutionContext {
 
     @Override
     public Expression getActualExpressionValue(Expression expression) {
-        return (!lazyModelSupported) ? expression : forceExpression(expression);
+        return (!lazyModelSupported) ? expression : forceExpression(expression.evaluate(this));
     }
 
     private Expression forceExpression(Expression expression) {
+        if (expression instanceof Thunk)
+            return getActualExpressionValue(expression);
         return expression;
     }
 

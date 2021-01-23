@@ -11,7 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TestSchemeMachine {
-    private final SchemeContext context = new SchemeContext();
+    private final SchemeContext context;
+
+    public TestSchemeMachine(boolean enableLaziness) {
+        context = new SchemeContext(enableLaziness);
+    }
+
+    public TestSchemeMachine() {
+        this(false);
+    }
 
     void simpleTestRun(String prog, String expectedOutput) {
         var replSteps = new Parser(Tokenizer.tokenize(prog)).parse().stream().map(e -> e.evaluate(context)).collect(Collectors.toList());

@@ -69,8 +69,9 @@ public class HomeMadeTests {
 
     @Test
     public void lazyExecutionTest() {
+        var lm = new TestSchemeMachine(true);
         var prog = "(define (try a b) " +
                 "(if (= a 0) 1 b)) \n (try 0 (/ 1 0))";
-        machine.simpleTestRun(prog, "1");
+        lm.simpleTestRun(prog, "1");
     }
 }
