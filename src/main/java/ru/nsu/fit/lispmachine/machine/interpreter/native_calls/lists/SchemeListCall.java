@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 public class SchemeListCall extends NativeCall {
     @Override
     public Expression apply(List<Expression> arguments, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            arguments = arguments.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
         return new SchemeList(arguments);
     }
 }

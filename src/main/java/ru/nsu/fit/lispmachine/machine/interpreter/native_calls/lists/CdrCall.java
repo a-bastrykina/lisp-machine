@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 public class CdrCall extends NativeCall {
     @Override
     public Expression apply(List<Expression> args, ExecutionContext context) {
+        if (context.isLazyModelSupported()) {
+            args = args.stream().map(context::getActualExpressionValue).collect(Collectors.toList());
+        }
         if (args.size() != 1) {
             throw new IllegalArgumentException("cdr requires 1 argument");
         }

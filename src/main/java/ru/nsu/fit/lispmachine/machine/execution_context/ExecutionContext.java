@@ -11,8 +11,6 @@ public interface ExecutionContext {
 
     void addDefinition(String name, Expression value);
 
-    void setValue(String name, Expression value);
-
     Expression getActualExpressionValue(Expression expression);
 
     boolean isLazyModelSupported();
