@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-//todo : move to homemade tests when parser will parse (try (body) (catch extype1 (catch-body1)) (catch extype1 (catch-body1)) ... )
+//todo : move to homemade tests when parser will parse (try (body) (catch "extype1" (catch-body1) "extype1" (catch-body1) ... )
 public class TryExceptTest {
 
     @Test

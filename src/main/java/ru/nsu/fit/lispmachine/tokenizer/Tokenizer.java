@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
+import ru.nsu.fit.lispmachine.exceptions.TokenizeException;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
@@ -95,7 +96,7 @@ public class Tokenizer {
 				String data = dataBuilder.toString();
 				return new Token(TokenType.recognizeType(data), data);
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				throw new TokenizeException(e);
 			}
 		}
 

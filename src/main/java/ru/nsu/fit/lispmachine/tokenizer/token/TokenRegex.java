@@ -9,5 +9,5 @@ public class TokenRegex {
 	public static final String NUM8_VALUE_REGEX = "#o([0-7])*";
 	public static final String NUM16_VALUE_REGEX = "#x([0-9a-f])*";
 	public static final String NUM10_VALUE_REGEX = "[+-]?\\d+";
-	public static final String REAL_VALUE_REGEX = "[+-]?\\d+e[+-]\\d+|\\.\\d+(e[+-]\\d+)?|\\d+\\.\\d*(e[+-]\\d+)?";
+	public static final String REAL_VALUE_REGEX = "[+-]?\\d+e[+-]\\d+|[+-]?\\.\\d+(e[+-]\\d+)?|[+-]?\\d+\\.\\d*(e[+-]\\d+)?";
 }

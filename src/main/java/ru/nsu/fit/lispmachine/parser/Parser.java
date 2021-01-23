@@ -1,6 +1,7 @@
 package ru.nsu.fit.lispmachine.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -99,6 +100,18 @@ public class Parser {
 		}
 	}
 
+	private List<Expression> retrieveExpressionsList() {
+		List<Expression> result = new ArrayList<>();
+		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			var currentExpr = parseNext();
+			if (currentExpr == null) {
+				throw new ParseException("Expecting closing brace");
+			}
+			result.add(currentExpr);
+		}
+		return result;
+	}
+
 	private Expression parseApplication() {
 		Expression operator = parseNext();
 		List<Expression> operands = new ArrayList<>();
@@ -147,26 +160,10 @@ public class Parser {
 			}
 
 			SchemeIdentifier definitionName = (SchemeIdentifier) parseNext();
-			List<Expression> params = new ArrayList<>();
-			Expression currentExpr;
-
-			while (currentToken.getType() != TokenType.CLOSE_BRACE) {
-				currentExpr = parseNext();
-				if (currentExpr == null) {
-					throw new ParseException("Expecting closing brace, but EOF reached");
-				}
-				params.add(currentExpr);
-			}
-
+			var params = retrieveExpressionsList();
 			proceedToken();
-
-			currentExpr = parseNext();
-
-			if (currentToken.getType() != TokenType.CLOSE_BRACE) {
-				throw new ParseException("Expecting closing brace to complete define");
-			}
-
-			return new Define(definitionName, params, currentExpr);
+			var expressions = retrieveExpressionsList();
+			return new Define(definitionName, params, expressions);
 		}
 	}
 
@@ -213,8 +210,7 @@ public class Parser {
 	}
 
 	private Expression parseQuote() {
-		boolean expectCloseBrace = currentToken.getType() == TokenType.IDENTIFIER;
-
+		boolean expectCloseBrace = "quote".equals(currentToken.getData());
 		proceedToken();
 
 		if (currentToken.getType() == TokenType.OPEN_BRACE) {
@@ -230,14 +226,42 @@ public class Parser {
 			}
 			return new QuotedExpr(new SchemeList(args));
 		} else {
-			Expression nestedExpr = parseNext();
-			if (expectCloseBrace && currentToken.getType() != TokenType.CLOSE_BRACE) {
-				throw new ParseException("Expecting closing brace to complete quote clause");
+			Expression nestedExpr = parseAtom();
+			if (expectCloseBrace) {
+				proceedToken();
+				if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+					throw new ParseException("Expecting closing brace to complete quote clause");
+				}
 			}
 			return new QuotedExpr(nestedExpr);
 		}
 
 
+	}
+
+	private Expression parseAtom() {
+		switch (currentToken.getType()) {
+			case BOOLEAN_VALUE:
+				return parseBoolean();
+			case CHARACTER_VALUE:
+				return parseChar();
+			case STRING_VALUE:
+				return parseString();
+			case NUM2_VALUE:
+				return parseBinaryNumber();
+			case NUM8_VALUE:
+				return parseOctetNumber();
+			case NUM10_VALUE:
+				return parseDecimalNumber();
+			case NUM16_VALUE:
+				return parseHexNumber();
+			case REAL_VALUE:
+				return parseRealNumber();
+			case IDENTIFIER:
+				return new SchemeIdentifier(currentToken.getData());
+			default:
+				throw new ParseException("Couldn parse atom for the token " + currentToken.getType());
+		}
 	}
 
 	private Expression parseAssignment() {

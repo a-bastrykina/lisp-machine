@@ -10,9 +10,9 @@ import java.util.function.Function;
 public class Define implements Expression {
 	private final SchemeIdentifier name;
 	private final List<Expression> parameters;
-	private final Expression body;
+	private final List<Expression> body;
 
-	public Define(SchemeIdentifier name, List<Expression> parameters, Expression body) {
+	public Define(SchemeIdentifier name, List<Expression> parameters, List<Expression> body) {
 		this.name = Objects.requireNonNull(name);
 		this.parameters = Objects.requireNonNull(parameters);
 		this.body = Objects.requireNonNull(body);
@@ -22,7 +22,7 @@ public class Define implements Expression {
 	}
 
 	public Define(SchemeIdentifier name, Expression body) {
-		this(name, Collections.emptyList(), body);
+		this(name, Collections.emptyList(), List.of(body));
 	}
 
 	@Override
@@ -32,7 +32,11 @@ public class Define implements Expression {
 	        context.addDefinition(name.toString(), evaluated);
 	        return evaluated;
         };
-        return parameters.isEmpty() ? action.apply(body) : action.apply(new Lambda(parameters, body));
+        if (parameters.isEmpty()) {
+            return action.apply(body.get(0));
+        }
+        var begin = new Begin(body);
+        return action.apply(new Lambda(parameters, begin));
 	}
 
 	@Override public boolean equals(Object o) {

@@ -1,6 +1,7 @@
 package ru.nsu.fit.lispmachine.machine.interpreter.native_calls.lists;
 
 import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
+import ru.nsu.fit.lispmachine.machine.interpreter.DottedSchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.NativeCall;
@@ -18,6 +19,9 @@ public class CdrCall extends NativeCall {
         }
         if (!(args.get(0) instanceof SchemeList)) {
             throw new IllegalArgumentException("cdr requires list as argument");
+        }
+        if (args.get(0) instanceof DottedSchemeList) {
+            return ((DottedSchemeList)args.get(0)).getValues().get(1);
         }
         var tmp = new ArrayList<>(((SchemeList) args.get(0)).getValues());
         if (tmp.size() == 0) {
