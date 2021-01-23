@@ -22,7 +22,7 @@ public class Define implements Expression {
 	}
 
 	public Define(SchemeIdentifier name, Expression body) {
-		this(name, Collections.emptyList(), Collections.emptyList());
+		this(name, Collections.emptyList(), List.of(body));
 	}
 
 	@Override
@@ -32,7 +32,11 @@ public class Define implements Expression {
 	        context.addDefinition(name.toString(), evaluated);
 	        return evaluated;
         };
-        return null;//parameters.isEmpty() ? action.apply(body) : action.apply(new Lambda(parameters, body));
+        if (parameters.isEmpty()) {
+            return action.apply(body.get(0));
+        }
+        var begin = new Begin(body);
+        return action.apply(new Lambda(parameters, begin));
 	}
 
 	@Override public boolean equals(Object o) {

@@ -23,10 +23,10 @@ public class Division extends NativeCall {
                     reduce(1., (a,b)-> a / b);
             return new SchemeNumber(res);
         } else {
-            var res = args.stream().
-                    map(a-> ((SchemeNumber) a).getValue()).
-                    map(Number::intValue).
-                    reduce(1,  (a,b)-> a / b);
+            int res = (int)args.get(0).castTo("java.lang.Int");
+            for (Expression arg : args.stream().skip(1).collect(Collectors.toList())) {
+                res/= (int)arg.castTo("java.lang.Int");
+            }
             return new SchemeNumber(res);
         }
     }

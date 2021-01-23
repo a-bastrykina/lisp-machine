@@ -11,7 +11,7 @@ public class SchemeMachineUtils {
     }
 
     public static void writeString(String str) {
-        System.out.println(str);
+        System.out.print(str);
     }
 
     public static void raiseJavaException(String name, String message) throws Throwable {
@@ -21,6 +21,7 @@ public class SchemeMachineUtils {
 
     public static String getStdLibrary() {
         return  "(define (display obj) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" obj))" +
+                "(define newline (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" \"\n\")))" +
                 "(define read-line (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"readString\")))" +
                 "(define (throw name message) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"raiseJavaException\" name message))";
     }

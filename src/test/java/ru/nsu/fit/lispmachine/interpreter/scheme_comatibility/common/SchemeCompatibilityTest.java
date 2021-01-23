@@ -33,8 +33,9 @@ public class SchemeCompatibilityTest {
 
     @Test
     public void testMakeRatDisplay() {
-        //todo it's parser fail
-        var prog = "(define (make-rat n d) (cons n d))" +
+        var prog = "(define (display obj) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" obj))+ " +
+                "(define newline (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" \"\n\")))" +
+                "(define (make-rat n d) (cons n d))" +
                 "(define (numer x) (car x))" +
                 "(define (denom x) (cdr x))" +
                 "(define (print-rat x)" +
@@ -44,24 +45,18 @@ public class SchemeCompatibilityTest {
                 "  (newline))" +
                 "(define one-half (make-rat 1 2))" +
                 "(print-rat one-half)";
-        machine.simpleTestRun(prog, "1/2");
-        var prog2 = "(define one-third (make-rat 1 3))" +
-                "(print-rat (add-rat one-half one-third))";
-        machine.simpleTestRun(prog2, "5/6");
-        var prog3 = "(print-rat (mul-rat one-half one-third))";
-        machine.simpleTestRun(prog3, "1/6");
-        var prog4 = "(print-rat (add-rat one-third one-third))";
-        machine.simpleTestRun(prog4, "6/9");
-
+        machine.simpleTestRun(prog, "'()");
         var gcdProg = "(define (gcd a b)" +
                 "  (if (= b 0)" +
                 "      a" +
-                "      (gcd b (remainder a b))))" +
+                "      (gcd b (% a b))))" +
+
                 "(define (make-rat n d)" +
-                "  (let ((g (gcd n d)))" +
-                "    (cons (/ n g) (/ d g))))" +
-                "(print-rat (add-rat one-third one-third))";
-        machine.simpleTestRun(gcdProg, "2/3");
+                "  (define g (gcd n d))" +
+                "  (cons (/ n g) (/ d g))" +
+                ")" +
+                "(print-rat (make-rat 15 3))";
+        machine.simpleTestRun(gcdProg, "'()");
     }
 
     @Test
@@ -190,7 +185,7 @@ public class SchemeCompatibilityTest {
         var prog = "(define (f x) (* 2 x))\n (f 3)";
         machine.simpleTestRun(prog, "6");
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> machine.simpleTestRun("(f '())","6"));
+                () -> machine.simpleTestRun("(f '())", "6"));
         assertEquals("* called with non numbers arguments", exception.getMessage());
     }
 }
