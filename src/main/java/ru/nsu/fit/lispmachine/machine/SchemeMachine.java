@@ -14,7 +14,7 @@ public class SchemeMachine {
     private final ExecutionContext context;
     private long lineNumber = 0;
 
-    SchemeMachine(boolean enableLaziness) {
+    public SchemeMachine(boolean enableLaziness) {
         var exprs = new Parser(Tokenizer.tokenize(SchemeMachineUtils.getStdLibrary())).parse();
         context = new SchemeContext(enableLaziness);
         for (Expression expr : exprs) {
@@ -26,7 +26,7 @@ public class SchemeMachine {
         }
     }
 
-    Expression execLine(String line) {
+    public Expression execLine(String line) {
         if (line.strip().isEmpty())
             return null;
         lineNumber++;
@@ -36,7 +36,7 @@ public class SchemeMachine {
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
-    void replMode() {
+    public void replMode() {
         while (true) {
             try {
                 System.err.println("> ");

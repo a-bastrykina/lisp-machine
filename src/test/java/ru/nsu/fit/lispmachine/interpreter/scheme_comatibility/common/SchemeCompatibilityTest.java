@@ -1,6 +1,7 @@
 package ru.nsu.fit.lispmachine.interpreter.scheme_comatibility.common;
 
 import org.junit.jupiter.api.Test;
+import ru.nsu.fit.lispmachine.machine.SchemeMachine;
 import ru.nsu.fit.lispmachine.machine.execution_context.SchemeContext;
 import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.Tokenizer;
@@ -11,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TestSchemeMachine {
-    private final SchemeContext context;
+    private final SchemeMachine machine;
 
     public TestSchemeMachine(boolean enableLaziness) {
-        context = new SchemeContext(enableLaziness);
+        machine = new SchemeMachine(enableLaziness);
     }
 
     public TestSchemeMachine() {
@@ -22,8 +23,7 @@ class TestSchemeMachine {
     }
 
     void simpleTestRun(String prog, String expectedOutput) {
-        var replSteps = new Parser(Tokenizer.tokenize(prog)).parse().stream().map(e -> e.evaluate(context)).collect(Collectors.toList());
-        assertEquals(expectedOutput, replSteps.get(replSteps.size() - 1).toString());
+        assertEquals(expectedOutput, machine.execLine(prog).toString());
     }
 }
 
@@ -113,27 +113,13 @@ public class SchemeCompatibilityTest {
         var prog3 = "(cons 3 (cons 2 '()))";
         machine.simpleTestRun(prog3, "(3 2)");
 
-        //todo: it's parser fail
         var prog4 = "(cons (cons 3 (cons 2 '())) 'bla)";
         machine.simpleTestRun(prog4, "((3 2) . bla)");
     }
 
     @Test
     public void mapTest() {
-        //todo: parser fail
-        //(define nil '())
-        // todo it's parser fail
-        // (map abs (list -10 2.5 -11.6 17))\n;
-
-        //todo move map and abs to standard library
-        var prog =
-                "(define (abs x) (if (< x  0) (- x) x))" +
-                        "(define (map proc items)" +
-                        "  (if (null? items)" +
-                        "      '()" +
-                        "      (cons (proc (car items))" +
-                        "            (map proc (cdr items)))))" +
-                        "(map abs (list -10 2.5 -11 17))";
+        var prog = "(map abs (list -10 2.5 -11 17))";
         machine.simpleTestRun(prog, "(10 2.5 11 17)");
 
         var prog1 = "(map (lambda (x) (* x x))\n" +
