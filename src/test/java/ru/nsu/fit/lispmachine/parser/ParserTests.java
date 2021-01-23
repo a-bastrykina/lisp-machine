@@ -1,5 +1,6 @@
 package ru.nsu.fit.lispmachine.parser;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -169,34 +170,58 @@ public class ParserTests {
 		assertEquals(expected, actual);
 	}
 
-    @Test
-    public void testParseDefineQuoted() {
-        // (define numbers '(1 2))
-        var expected = List
-                .of(new Define(new SchemeIdentifier("numbers"),
-                        new QuotedExpr(new SchemeList(List.of(new SchemeNumber(1), new SchemeNumber(2))))));
+	@Test
+	public void testParseDefineQuoted() {
+		// (define numbers '(1 2))
+		var expected = List
+				.of(new Define(new SchemeIdentifier("numbers"),
+						new QuotedExpr(new SchemeList(List.of(new SchemeNumber(1), new SchemeNumber(2))))));
 
-        var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
-                new Token(TokenType.IDENTIFIER, "numbers"),
-                new Token(TokenType.QUOTE),
-                new Token(TokenType.OPEN_BRACE),
-                new Token(TokenType.NUM10_VALUE, "1"),
-                new Token(TokenType.NUM10_VALUE, "2"),
-                new Token(TokenType.CLOSE_BRACE),
-                new Token(TokenType.CLOSE_BRACE)).iterator());
-        var actual = parser.parse();
-        assertEquals(expected, actual);
-    }
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
+				new Token(TokenType.IDENTIFIER, "numbers"),
+				new Token(TokenType.QUOTE),
+				new Token(TokenType.OPEN_BRACE),
+				new Token(TokenType.NUM10_VALUE, "1"),
+				new Token(TokenType.NUM10_VALUE, "2"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.EOF)).iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
 
 	@Test
 	public void testParseDefineWithParams() {
 		// (define (square r) (* r r))
 		var expected = List
 				.of(new Define(new SchemeIdentifier("square"), List.of(new SchemeIdentifier("r")),
-						new Application(new SchemeIdentifier("*"), List.of(new SchemeIdentifier("r"),
-								new SchemeIdentifier("r")))));
+						Collections.singletonList(
+								new Application(new SchemeIdentifier("*"), List.of(new SchemeIdentifier("r"),
+										new SchemeIdentifier("r"))))));
 		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "square"),
+				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "*"),
+				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.IDENTIFIER, "r"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF)).iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseDefineWithParamsAndMultiexpr() {
+		// (define (square r) (println r) (* r r))
+		var expected = List
+				.of(new Define(new SchemeIdentifier("square"), List.of(new SchemeIdentifier("r")),
+						List.of(
+								new Application(new SchemeIdentifier("println"), List.of(new SchemeIdentifier("r"))),
+								new Application(new SchemeIdentifier("*"), List.of(new SchemeIdentifier("r"),
+										new SchemeIdentifier("r"))))));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "define"),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "square"),
+				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "println"),
 				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.CLOSE_BRACE),
 				new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "*"),
 				new Token(TokenType.IDENTIFIER, "r"), new Token(TokenType.IDENTIFIER, "r"),
@@ -226,6 +251,21 @@ public class ParserTests {
 				.of(new QuotedExpr(new SchemeIdentifier("a")));
 		var parser = new Parser(
 				List.of(new Token(TokenType.QUOTE), new Token(TokenType.IDENTIFIER, "a"), new Token(TokenType.EOF))
+						.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testParseQuoteWithApplication() {
+		// (println 'a)
+		var expected = List
+				.of(new Application(new SchemeIdentifier("println"),
+						Collections.singletonList(new QuotedExpr(new SchemeIdentifier("a")))));
+		var parser = new Parser(
+				List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "println"),
+						new Token(TokenType.QUOTE), new Token(TokenType.IDENTIFIER, "a"),
+						new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF))
 						.iterator());
 		var actual = parser.parse();
 		assertEquals(expected, actual);
