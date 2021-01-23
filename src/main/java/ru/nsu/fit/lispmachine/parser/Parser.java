@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -23,6 +24,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.SchemeList;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeNumber;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeString;
 import ru.nsu.fit.lispmachine.machine.interpreter.SchemeIdentifier;
+import ru.nsu.fit.lispmachine.machine.interpreter.TryExcept;
 import ru.nsu.fit.lispmachine.machine.interpreter.native_calls.JavaMethodCall;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
@@ -48,6 +50,7 @@ public class Parser {
 		definedForms.put(SchemeKeywords.SET_KEYWORD, this::parseAssignment);
 		definedForms.put(SchemeKeywords.BEGIN_KEYWORD, this::parseBegin);
 		definedForms.put(SchemeKeywords.JAVA_CALL_KEYWORD, this::parseJavaMethodCall);
+		definedForms.put(SchemeKeywords.TRY_CATCH_KEYWORD, this::parseTryCatch);
 	}
 
 	public List<Expression> parse() {
@@ -71,6 +74,7 @@ public class Parser {
 		try {
 			switch (currentToken.getType()) {
 				case EOF:
+				case CLOSE_BRACE:
 					return null;
 				case OPEN_BRACE:
 					return parseAfterOpenBrace();
@@ -319,6 +323,27 @@ public class Parser {
 		}
 
 		return new JavaMethodCall(className, methodName, args);
+	}
+
+	private Expression parseTryCatch() {
+		proceedToken();
+
+		Expression tryBody = parseNext();
+		Map<SchemeString, Expression> namesAndCatches = new HashMap<>();
+
+		while (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			if (currentToken.getType() != TokenType.STRING_VALUE) {
+				throw new ParseException("Expecting string value to parse try-catch clause");
+			}
+			var name = (SchemeString) parseNext();
+			var catchBody = parseNext();
+			if (catchBody == null) {
+				throw new ParseException("Unexpected end of try-catch clause");
+			}
+			namesAndCatches.put(name, catchBody);
+		}
+
+		return new TryExcept(tryBody, namesAndCatches);
 	}
 
 	private Expression parseDecimalNumber() {
