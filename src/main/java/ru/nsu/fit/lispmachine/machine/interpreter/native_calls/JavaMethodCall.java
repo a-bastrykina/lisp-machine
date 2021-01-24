@@ -11,13 +11,22 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A class to represent Java Method call expression.
+ * Example in Scheme:
+ * (java-call "java.lang.Double" "sum" 5 10)
+ */
 public class JavaMethodCall extends NativeCall {
-
     private final SchemeString className;
     private final SchemeString methodName;
     private final List<Expression> schemeParameters;
     private final HashMap<String, Function<Object, Expression>> typeMap = new HashMap<>();
 
+    /**
+     * @param className
+     * @param methodName
+     * @param schemeParameters method parameters
+     */
     public JavaMethodCall(SchemeString className, SchemeString methodName, List<Expression> schemeParameters) {
         this.className = className;
         this.methodName = methodName;

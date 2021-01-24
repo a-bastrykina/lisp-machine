@@ -8,6 +8,10 @@ public class QuotedExpr implements Expression {
 
 	private final Expression body;
 
+	/**
+	 * @param body
+	 * @throws NullPointerException if an argument is null
+	 */
 	public QuotedExpr(Expression body) {
 		this.body = Objects.requireNonNull(body);
 	}

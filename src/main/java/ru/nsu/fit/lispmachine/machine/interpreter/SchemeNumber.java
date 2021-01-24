@@ -7,6 +7,10 @@ import java.util.Objects;
 public class SchemeNumber implements Expression {
     private Number value;
 
+    /**
+     * @param value
+     * @throws NullPointerException if an argument is null
+     */
     public SchemeNumber(Number value) {
         this.value = Objects.requireNonNull(value);
     }
@@ -16,6 +20,9 @@ public class SchemeNumber implements Expression {
         return this;
     }
 
+    /**
+     * @return number value
+     */
     public Number getValue() {
         return value;
     }

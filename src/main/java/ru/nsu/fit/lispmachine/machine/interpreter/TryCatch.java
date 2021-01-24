@@ -5,11 +5,21 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Class to represent try-catch clause
+ * Example in Scheme:
+ * (try-catch (/ 1 0) "java.lang.ArithmeticException" (println "Oops"))
+ */
 public class TryCatch implements Expression {
 
 	private final Expression body;
 	private final Map<SchemeString, Expression> exceptionsAndCatches;
 
+	/**
+	 * @param body an expression of try block
+	 * @param exceptionsAndCatches a map of exception types and catch expressions
+	 * @throws NullPointerException if arguments are null
+	 */
 	public TryCatch(Expression body, Map<SchemeString, Expression> exceptionsAndCatches) {
 		this.body = Objects.requireNonNull(body);
 		this.exceptionsAndCatches = Objects.requireNonNull(exceptionsAndCatches);

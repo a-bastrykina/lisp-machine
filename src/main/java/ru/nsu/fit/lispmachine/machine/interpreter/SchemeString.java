@@ -7,6 +7,10 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 public class SchemeString implements Expression {
 	private String value;
 
+	/**
+	 * @param value
+	 * @throws NullPointerException if an argument is null
+	 */
 	public SchemeString(String value) {
 		this.value = Objects.requireNonNull(value);
 	}

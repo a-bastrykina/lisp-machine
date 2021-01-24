@@ -9,6 +9,11 @@ public class Begin implements Expression {
 
 	private final List<Expression> operands;
 
+	/**
+	 * @param operands
+	 * @throws NullPointerException if argument is null
+	 * @throws IllegalArgumentException if operands list is empty
+	 */
 	public Begin(List<Expression> operands) {
 		Objects.requireNonNull(operands);
 		if (operands.isEmpty()) {

@@ -9,6 +9,11 @@ public class Lambda implements Expression {
 	private final List<Expression> parameters;
 	private final Expression body;
 
+	/**
+	 * @param parameters lambda parameters
+	 * @param body lambda body
+	 * @throws NullPointerException if arguments are null
+	 */
 	public Lambda(List<Expression> parameters, Expression body) {
 		this.parameters = Objects.requireNonNull(parameters);
 		this.body = Objects.requireNonNull(body);

@@ -8,11 +8,19 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A class to represent application of the Scheme language.
+ */
 public class Application implements Expression {
     protected List<Expression> arguments;
     private final Expression operator;
     private ExecutionContext selfContext;
 
+    /**
+     * @param operator
+     * @param arguments
+     * @throws NullPointerException if arguments are null
+     */
     public Application(Expression operator, List<Expression> arguments) {
         this.operator = Objects.requireNonNull(operator);
         this.arguments = Objects.requireNonNull(arguments);

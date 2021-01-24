@@ -1,5 +1,8 @@
 package ru.nsu.fit.lispmachine.exceptions;
 
+/**
+ * Class to represent all exceptions occurred while parsing
+ */
 public class ParseException extends RuntimeException {
 	public ParseException() {
 	}

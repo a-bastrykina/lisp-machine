@@ -4,11 +4,19 @@ import ru.nsu.fit.lispmachine.machine.execution_context.ExecutionContext;
 
 import java.util.Objects;
 
+/**
+ * Class to represent an assignment expression of Scheme.
+ */
 public class Assignment implements Expression {
 
 	private final SchemeIdentifier name;
 	private final Expression value;
 
+	/**
+	 * @param name variable name
+	 * @param value variable value
+	 * @throws NullPointerException if the arguments are null
+	 */
 	public Assignment(SchemeIdentifier name, Expression value) {
 		this.name = Objects.requireNonNull(name);
 		this.value = Objects.requireNonNull(value);

@@ -4,9 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Char token rule
+ */
 public class CharTokenRule implements ITokenRule {
 	private final List<String> chars;
 
+	/**
+	 * @param chars list of characters
+	 */
 	public CharTokenRule(Character... chars) {
 		this.chars = Arrays.stream(chars).map(Object::toString).collect(Collectors.toList());
 	}

@@ -13,36 +13,54 @@ import ru.nsu.fit.lispmachine.exceptions.TokenizeException;
 import ru.nsu.fit.lispmachine.tokenizer.token.Token;
 import ru.nsu.fit.lispmachine.tokenizer.token.TokenType;
 
+/**
+ * Tokenizer class.
+ * Using this class, you can transform text data (from file or String object)
+ * into stream of tokens
+ */
 public class Tokenizer {
 
+	/**
+	 * @param file input file
+	 * @return token iterator
+	 * @throws TokenizeException if an IO error occured
+	 */
 	public static TokenIterator tokenize(File file) {
 		try {
 			return new TokenIterator(new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()))));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new TokenizeException(e);
 		}
 	}
 
+	/**
+	 * @param inputString input string
+	 * @return token iterator
+	 * @throws TokenizeException if an IO error occured
+	 */
 	public static TokenIterator tokenize(String inputString) {
 		try {
 			return new TokenIterator(
 					new BufferedReader(new InputStreamReader(new ByteArrayInputStream(inputString.getBytes()))));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new TokenizeException(e);
 		}
 	}
 
+	/**
+	 * Class that represents an iterator of tokens
+	 */
 	public static class TokenIterator implements Iterator<Token> {
-		final BufferedReader r;
+		private final BufferedReader r;
 		boolean eofReached = false;
-		int currentChar;
+		private int currentChar;
 
 		private static final int EOF = -1;
 		private static final int START_STRING_CHAR = '\"';
 		private static final int SHARP_CHAR = '#';
 		private static final int OPEN_BRACE_CHAR = '(';
 
-		TokenIterator(BufferedReader r) throws IOException {
+		private TokenIterator(BufferedReader r) throws IOException {
 			this.r = r;
 			currentChar = r.read();
 		}
@@ -51,6 +69,11 @@ public class Tokenizer {
 			return !eofReached;
 		}
 
+		/**
+		 * Yields with a single token on each call
+		 * @return token
+		 * @throws TokenizeException if an IO error occured
+		 */
 		@Override public Token next() {
 			try {
 				if (currentChar == EOF) {
@@ -71,7 +94,7 @@ public class Tokenizer {
 				StringBuilder dataBuilder = new StringBuilder();
 
 				// Try match single character
-				TokenType type = TokenType.matchCharacter(currentChar);
+				TokenType type = TokenType.recognizeType(currentChar);
 				if (type != null) {
 					currentChar = r.read();
 					return new Token(type);
