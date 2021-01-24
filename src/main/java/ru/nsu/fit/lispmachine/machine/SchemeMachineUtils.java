@@ -26,38 +26,38 @@ public class SchemeMachineUtils {
 		System.out.print(str);
 	}
 
-	/**
-	 * Raise java exception.
-	 * Called using java-call special form
-	 *
-	 * @param name exception name
-	 * @param message exception message
-	 * @throws Throwable
-	 */
-	public static void raiseJavaException(String name, String message) throws Throwable {
-		var c = Class.forName(name);
-		throw (Throwable) c.getDeclaredConstructor(String.class).newInstance(message);
-	}
+    /**
+     * Raise java exception.
+     * Called using java-call special form
+     *
+     * @param name exception name
+     * @param message exception message
+     * @throws Throwable
+     */
+    public static void raiseJavaException(String name, String message) throws Throwable {
+        var c = Class.forName(name);
+        throw (Throwable)c.getDeclaredConstructor(String.class).newInstance(message);
+    }
 
-	/**
-	 * Get Scheme standart library
-	 *
-	 * @return standart library written in Scheme
-	 */
-	public static String getStdLibrary() {
-		return "(define (display obj) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" obj))"
-				+
-				"(define newline (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" \"\n\")))"
-				+
-				"(define read-line (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"readString\")))"
-				+
-				"(define (throw name message) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"raiseJavaException\" name message))"
-				+
-				"(define (abs x) (if (< x  0) (- x) x))" +
-				"(define (map proc items)" +
-				"  (if (null? items)" +
-				"      '()" +
-				"      (cons (proc (car items))" +
-				"            (map proc (cdr items)))))";
-	}
+    public static double floor(double val) {
+        return Math.floor(val);
+    }
+
+    /**
+     * Get Scheme standart library
+     *
+     * @return standart library written in Scheme
+     */
+    public static String getStdLibrary() {
+        return  "(define (display obj) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" obj))" +
+                "(define newline (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" \"\n\")))" +
+                "(define read-line (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"readString\")))" +
+                "(define (throw name message) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"raiseJavaException\" name message))" +
+                "(define (abs x) (if (< x  0) (- x) x))" +
+                "(define (map proc items)" +
+                "  (if (null? items)" +
+                "      '()" +
+                "      (cons (proc (car items))" +
+                "            (map proc (cdr items)))))";
+    }
 }

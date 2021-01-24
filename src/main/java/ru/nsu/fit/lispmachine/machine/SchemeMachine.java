@@ -8,6 +8,9 @@ import ru.nsu.fit.lispmachine.parser.Parser;
 import ru.nsu.fit.lispmachine.tokenizer.Tokenizer;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +71,15 @@ public class SchemeMachine {
         }
     }
 
+    public void readFile(String filename) {
+        try {
+            String text = Files.readString(Paths.get(filename));
+            execLine(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Main method
      * @param args
@@ -79,6 +91,9 @@ public class SchemeMachine {
         } else {
             m = new SchemeMachine(true);
         }
+
+        var file = Arrays.stream(args).dropWhile(a-> !a.equals("--file")).skip(1).findFirst();
+        file.ifPresent(m::readFile);
         m.replMode();
     }
 }

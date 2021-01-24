@@ -10,6 +10,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
 import ru.nsu.fit.lispmachine.machine.interpreter.Begin;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
+import ru.nsu.fit.lispmachine.machine.interpreter.DoTimes;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
 import ru.nsu.fit.lispmachine.machine.interpreter.QuotedExpr;
@@ -368,4 +369,26 @@ public class ParserTests {
 		var actual = parser.parse();
 		assertEquals(expected, actual);
 	}
+
+	@Test
+	public void testParseDoTimes() {
+		// (do-times (i 5) (println i))
+		var expected = List.of(new DoTimes(new SchemeIdentifier("i"), new SchemeNumber(5),
+				new Application(new SchemeIdentifier("println"),
+						Collections.singletonList(new SchemeIdentifier("i")))));
+		var parser = new Parser(List.of(new Token(TokenType.OPEN_BRACE), new Token(TokenType.IDENTIFIER, "do-times"),
+				new Token(TokenType.OPEN_BRACE),
+				new Token(TokenType.IDENTIFIER, "i"),
+				new Token(TokenType.NUM10_VALUE, "5"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.OPEN_BRACE),
+				new Token(TokenType.IDENTIFIER, "println"),
+				new Token(TokenType.IDENTIFIER, "i"),
+				new Token(TokenType.CLOSE_BRACE),
+				new Token(TokenType.CLOSE_BRACE), new Token(TokenType.CLOSE_BRACE), new Token(TokenType.EOF))
+				.iterator());
+		var actual = parser.parse();
+		assertEquals(expected, actual);
+	}
+
 }

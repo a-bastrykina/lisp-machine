@@ -13,6 +13,7 @@ import ru.nsu.fit.lispmachine.machine.interpreter.Application;
 import ru.nsu.fit.lispmachine.machine.interpreter.Assignment;
 import ru.nsu.fit.lispmachine.machine.interpreter.Begin;
 import ru.nsu.fit.lispmachine.machine.interpreter.Define;
+import ru.nsu.fit.lispmachine.machine.interpreter.DoTimes;
 import ru.nsu.fit.lispmachine.machine.interpreter.Expression;
 import ru.nsu.fit.lispmachine.machine.interpreter.IfClause;
 import ru.nsu.fit.lispmachine.machine.interpreter.Lambda;
@@ -58,6 +59,7 @@ public class Parser {
 		definedForms.put(SchemeKeywords.BEGIN_KEYWORD, this::parseBegin);
 		definedForms.put(SchemeKeywords.JAVA_CALL_KEYWORD, this::parseJavaMethodCall);
 		definedForms.put(SchemeKeywords.TRY_CATCH_KEYWORD, this::parseTryCatch);
+		definedForms.put(SchemeKeywords.DO_TIMES_KEYWORD, this::parseDoTimes);
 	}
 
 	/**
@@ -286,6 +288,37 @@ public class Parser {
 		}
 
 		return new TryCatch(tryBody, namesAndCatches);
+	}
+
+	private Expression parseDoTimes() {
+		proceedToken();
+
+		if (currentToken.getType() != TokenType.OPEN_BRACE) {
+			throw new ParseException("Expecting open brace to parse do-times clause");
+		}
+		proceedToken();
+
+		if (currentToken.getType() != TokenType.IDENTIFIER) {
+			throw new ParseException("Expecting identifier to parse do-times clause");
+		}
+		SchemeIdentifier loopVar = (SchemeIdentifier) parseNext();
+
+		if (currentToken.getType() != TokenType.NUM10_VALUE) {
+			throw new ParseException("Expecting decimal number to parse do-times clause");
+		}
+		SchemeNumber iterBound = (SchemeNumber) parseNext();
+
+		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting close brace to parse do-times clause");
+		}
+		proceedToken();
+
+		Expression body = parseNext();
+
+		if (currentToken.getType() != TokenType.CLOSE_BRACE) {
+			throw new ParseException("Expecting closing brace to complete assignment clause");
+		}
+		return new DoTimes(loopVar, iterBound, body);
 	}
 
 	private Expression parseDecimalNumber() {
