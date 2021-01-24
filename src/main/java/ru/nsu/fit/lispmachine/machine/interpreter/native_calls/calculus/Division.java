@@ -19,10 +19,10 @@ public class Division extends NativeCall {
             throw new IllegalArgumentException("/ called with non numbers arguments");
         }
         if (args.stream().anyMatch(a -> ((SchemeNumber) a).getValue() instanceof Double)) {
-            var res = args.stream().
-                    map(a -> ((SchemeNumber) a).getValue()).
-                    map(Number::doubleValue).
-                    reduce(1., (a, b) -> a / b);
+            double res = (double) args.get(0).castTo("java.lang.Double");
+            for (Expression arg : args.stream().skip(1).collect(Collectors.toList())) {
+                res /= (double) arg.castTo("java.lang.Double");
+            }
             return new SchemeNumber(res);
         } else {
             int res = (int) args.get(0).castTo("java.lang.Int");

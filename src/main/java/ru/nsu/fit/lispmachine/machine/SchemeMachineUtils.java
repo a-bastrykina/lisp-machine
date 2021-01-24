@@ -19,10 +19,15 @@ public class SchemeMachineUtils {
         throw (Throwable)c.getDeclaredConstructor(String.class).newInstance(message);
     }
 
+    public static double floor(double val) {
+        return Math.floor(val);
+    }
+
     public static String getStdLibrary() {
         return  "(define (display obj) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" obj))" +
                 "(define newline (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"writeString\" \"\n\")))" +
                 "(define read-line (lambda () (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"readString\")))" +
+                "(define read read-line)" +
                 "(define (throw name message) (java-call \"ru.nsu.fit.lispmachine.machine.SchemeMachineUtils\" \"raiseJavaException\" name message))" +
                 "(define (abs x) (if (< x  0) (- x) x))" +
                 "(define (map proc items)" +
